@@ -1,11 +1,6 @@
 import React, {useContext} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {
-  SignInScreen,
-  SignUpScreen,
-  OnboardingScreen,
-  OTPScreen,
-} from '../screens/auth';
+import {Login, NumberOtp} from '../screen';
 
 import {AuthContext} from '../context/AuthProvider';
 
@@ -20,30 +15,15 @@ function AuthNavigation() {
         options={{
           headerShown: false,
         }}
-        name="Onboard"
-        component={OnboardingScreen}
+        name="Login"
+        component={Login}
       />
       <RootStack.Screen
         options={{
           headerShown: false,
         }}
-        name="SignIn"
-        component={SignInScreen}
-      />
-      <RootStack.Screen
-        options={{
-          headerShown: false,
-        }}
-        name="SignUp"
-        component={SignUpScreen}
-      />
-
-      <RootStack.Screen
-        options={{
-          headerShown: false,
-        }}
-        name="OTP"
-        component={OTPScreen}
+        name="NumberOtp"
+        component={NumberOtp}
       />
     </RootStack.Navigator>
   );
