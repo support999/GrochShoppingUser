@@ -28,6 +28,7 @@ import TopPick from './TopPick';
 
 import APP_URL from './../AppURL';
 import {ScrollView, StatusBar, useColorScheme} from 'react-native';
+import {fetchCategory} from '../data/data';
 const Home = ({navigation}) => {
   const [isLoading, setLoading] = useState(true);
   const [Data, setData] = useState([]);
@@ -58,7 +59,7 @@ const Home = ({navigation}) => {
   };
 
   useEffect(() => {
-    componentDidMount();
+    // fetchCategory();
   }, []);
 
   return (

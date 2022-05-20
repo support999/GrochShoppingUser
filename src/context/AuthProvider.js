@@ -9,6 +9,8 @@ export const AuthProvider = ({children}) => {
   const [firstLaunch, setFirstLaunch] = useState(true);
   const [auth, setAuth] = useState(true);
   const [user, setUser] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [vendorsNearBy, setVendorsNearBy] = useState([]);
 
   return (
     <AuthContext.Provider
@@ -21,6 +23,10 @@ export const AuthProvider = ({children}) => {
         setAuth,
         firstLaunch,
         setFirstLaunch,
+        categories,
+        setCategories,
+        vendorsNearBy,
+        setVendorsNearBy,
       }}>
       {children}
     </AuthContext.Provider>
