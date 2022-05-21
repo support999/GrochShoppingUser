@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -16,7 +16,18 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {ScrollView, StatusBar, useColorScheme} from 'react-native';
+import {fetchHistory} from '../data/data';
 const Favorit = () => {
+  const fetchData = async () => {
+    const res = await fetchHistory();
+    // console.log(res[1]);
+    // setVendorsNearBy(res);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
     <View style={styles.fevoritSection}>
       <View style={styles.fevoritSectionHeader}>

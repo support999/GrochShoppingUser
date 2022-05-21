@@ -85,16 +85,20 @@ export const loadToken = async () => {
   try {
     const authToken = await getAuthToken();
 
+    console.log(authToken);
+
     const {idToken} = authToken;
 
     const decodedToken = jwt_decode(idToken);
     if (decodedToken.exp * 1000 < Date.now()) {
       console.log('Token expired');
-      //   await AsyncStorage.removeItem('authTokens');
-      //   loadToken()
+      await AsyncStorage.removeItem('authTokens');
+      loadToken();
     } else {
       console.log('valid token');
       await setHeaders(idToken);
     }
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 };
