@@ -29,7 +29,7 @@ const NearYou = () => {
 
   const fetchData = async () => {
     const res = await vendorsNearby();
-    // console.log(res);
+    // console.log(res[1]);
     setVendorsNearBy(res);
   };
 
@@ -52,7 +52,7 @@ const NearYou = () => {
             if (index < 6)
               return (
                 <VendorsNearbyListitem
-                  key={item.productCategoryId}
+                  key={item.vendorGuid}
                   item={item}
                   index={index}
                   navigation={navigation}
