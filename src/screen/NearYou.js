@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,9 +6,7 @@ import {
   TextInput,
   Image,
   Dimensions,
-  ImageBackground,
-  SafeAreaView,
-  TouchableOpacity,
+  Alert,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -19,23 +17,25 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Favorit from './Favorit';
 import {ScrollView, StatusBar, useColorScheme} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {vendorsNearby} from '../data/data';
+import {vendorProductImage, vendorsNearby} from '../data/data';
 import {AuthContext} from '../context/AuthProvider';
 import {VendorsNearbyListitem} from '../components';
 
 const NearYou = () => {
   const navigation = useNavigation();
-  const {vendorsNearBy, setVendorsNearBy} = useContext(AuthContext);
+  const {vendorsNearBy, setVendorsNearBy, location} = useContext(AuthContext);
 
   const fetchData = async () => {
-    const res = await vendorsNearby();
-    // console.log(res[1]);
+    const res = await vendorsNearby(location);
+
     setVendorsNearBy(res);
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (location !== null) {
+      fetchData();
+    }
+  }, [location]);
 
   return (
     <View style={styles.storeNearYou}>

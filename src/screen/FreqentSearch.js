@@ -1,13 +1,13 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
   View,
-  TextInput,
   TouchableOpacity,
-  Image,
   Dimensions,
-  ImageBackground,
+  ScrollView,
+  FlatList,
+  StatusBar,
   SafeAreaView,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -19,8 +19,83 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Favorit from './Favorit';
 import SearchBar from './SearchBar';
 import OfferSlide from './OfferSlide';
-import {ScrollView, StatusBar, useColorScheme} from 'react-native';
+
+import {searchProductByName, searchVendorByProductName} from '../data/data';
+
+import {
+  ActivityIndicator,
+  ProductListitem,
+  VendorsNearbyListitem,
+} from '../components';
+import {addFrequentSearch, getFrequentSearch} from '../data/user';
+
 const FreqentSearch = ({navigation}) => {
+  const [isFirstTime, setIsFirstTime] = useState(true);
+  const [searchType, setSearchType] = useState('product');
+  const [result, setResult] = useState([]);
+  const [resultProduct, setResultProduct] = useState([]);
+  const [filter, setFilter] = useState(null);
+  const [limit, setLimit] = useState(20);
+  const [loading, setLoading] = useState(false);
+  const [frequentSearch, setFrequentSearch] = useState(['beans']);
+
+  // console.log(resultProduct.length);
+
+  const fetchFrequent = async () => {
+    const res = await getFrequentSearch();
+    setFrequentSearch(res);
+  };
+
+  useEffect(() => {
+    fetchFrequent();
+  }, []);
+
+  const fetchData = async filter => {
+    setLoading(true);
+    var res = [];
+    // if (searchType === 'vendor') {
+    //   res = await searchVendorByProductName(filter);
+    //   setResult(res);
+    // } else {
+    res = await searchProductByName(filter);
+    setResultProduct(res);
+    // }
+    setLoading(false);
+    setIsFirstTime(false);
+
+    // if the serach has result add , item to frequenst search
+    if (res.length > 0) {
+      // chech  if item is not already in frequent search
+
+      try {
+        const index = frequentSearch.findIndex(
+          item => item.toLocaleLowerCase() === filter.toLocaleLowerCase(),
+        );
+        if (index < 0) addItemToFrequentSearch(filter);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
+  const performSearch = () => {
+    fetchData(filter);
+  };
+
+  const onChange = val => {
+    setFilter(val);
+    // console.log(val
+  };
+
+  const addItemToFrequentSearch = async item => {
+    var tempSearch = [];
+    // tempSearch = frequentSearch;
+    tempSearch.push(item);
+    Array.prototype.push.apply(tempSearch, frequentSearch);
+    setFrequentSearch(tempSearch);
+    await addFrequentSearch(tempSearch);
+  };
+
   return (
     <View style={styles.main}>
       <View style={styles.header}>
@@ -37,82 +112,199 @@ const FreqentSearch = ({navigation}) => {
         {/* <Ionicons style={styles.closeIcon} name='close'  /> */}
       </View>
 
-      <SearchBar></SearchBar>
-      <View style={styles.category}>
+      {/* <View style={[styles.category, {marginBottom: -30}]}>
         <View style={styles.categorySectionHeader}>
-          <Text style={styles.categorySectionHeaderCategory}>
-            Frequent Search
-          </Text>
+          <Text style={styles.categorySectionHeaderCategory}>Filter</Text>
         </View>
 
         <View style={styles.categorySectionGrid}>
           <TouchableOpacity
-            style={styles.categorySectionItem}
-            onPress={() => navigation.navigate('SearchProduct')}>
-            <View style={styles.categoryItemLogoBG}>
-              <Text style={styles.categoryItemName}>Meat</Text>
+            onPress={() => {
+              setSearchType('product');
+              setResult([]);
+              setResultProduct([]);
+            }}
+            style={styles.categorySectionItem}>
+            <View
+              style={[
+                styles.categoryItemLogoBG,
+                {
+                  backgroundColor:
+                    searchType === 'product' ? '#FF0909' : '#fff',
+                },
+              ]}>
+              <Text
+                style={[
+                  styles.categoryItemName,
+                  {color: searchType === 'product' ? '#FFF' : '#000'},
+                ]}>
+                Product
+              </Text>
             </View>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={styles.categorySectionItem}
-            onPress={() => navigation.navigate('SearchProduct')}>
-            <View style={styles.categoryItemLogoBG}>
-              <Text style={styles.categoryItemName}>Meat</Text>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.categorySectionItem}
-            onPress={() => navigation.navigate('SearchProduct')}>
-            <View style={styles.categoryItemLogoBG}>
-              <Text style={styles.categoryItemName}>Meat</Text>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.categorySectionItem}
-            onPress={() => navigation.navigate('SearchProduct')}>
-            <View style={styles.categoryItemLogoBG}>
-              <Text style={styles.categoryItemName}>Meat</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <View style={styles.category}>
-        <View style={styles.categorySectionHeader}>
-          <Text style={styles.categorySectionHeaderCategory}>
-            Popular Suggestions
-          </Text>
-        </View>
-
-        <View style={styles.categorySectionGrid}>
-          <TouchableOpacity style={styles.categorySectionItem}>
-            <View style={styles.categoryItemLogoBG}>
-              <Text style={styles.categoryItemName}>Meat</Text>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.categorySectionItem}>
-            <View style={styles.categoryItemLogoBG}>
-              <Text style={styles.categoryItemName}>Meat</Text>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.categorySectionItem}>
-            <View style={styles.categoryItemLogoBG}>
-              <Text style={styles.categoryItemName}>Meat</Text>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.categorySectionItem}>
-            <View style={styles.categoryItemLogoBG}>
-              <Text style={styles.categoryItemName}>Meat</Text>
+            onPress={() => {
+              setSearchType('vendor');
+              setResult([]);
+              setResultProduct([]);
+            }}
+            style={styles.categorySectionItem}>
+            <View
+              style={[
+                styles.categoryItemLogoBG,
+                {
+                  backgroundColor: searchType === 'vendor' ? '#FF0909' : '#fff',
+                },
+              ]}>
+              <Text
+                style={[
+                  styles.categoryItemName,
+                  {color: searchType === 'vendor' ? '#FFF' : '#000'},
+                ]}>
+                Vendor
+              </Text>
             </View>
           </TouchableOpacity>
         </View>
-      </View>
+      </View> */}
+
+      <SearchBar onChange={onChange} doSomething={performSearch} />
+
+      <ScrollView>
+        {!loading && (
+          <View>
+            <View style={styles.category}>
+              <View style={styles.categorySectionHeader}>
+                <Text style={styles.categorySectionHeaderCategory}>
+                  Frequent Search
+                </Text>
+              </View>
+
+              <View style={styles.categorySectionGrid}>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                  {frequentSearch?.map((item, index) => {
+                    return (
+                      <TouchableOpacity
+                        key={index.toString()}
+                        style={styles.categorySectionItem}
+                        onPress={() => fetchData(item)}>
+                        <View style={styles.categoryItemLogoBG}>
+                          <Text style={styles.categoryItemName}>{item}</Text>
+                        </View>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </ScrollView>
+              </View>
+            </View>
+
+            <View style={styles.category}>
+              <View style={styles.categorySectionHeader}>
+                <Text style={styles.categorySectionHeaderCategory}>
+                  Popular Suggestions
+                </Text>
+              </View>
+
+              <View style={styles.categorySectionGrid}>
+                <TouchableOpacity style={styles.categorySectionItem}>
+                  <View style={styles.categoryItemLogoBG}>
+                    <Text style={styles.categoryItemName}>Meat</Text>
+                  </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.categorySectionItem}>
+                  <View style={styles.categoryItemLogoBG}>
+                    <Text style={styles.categoryItemName}>Meat</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        )}
+
+        {!loading && (
+          <View style={styles.previousYou}>
+            <View style={styles.previousYouHeader}>
+              <Text style={styles.previousYouHeaderFevorit}>
+                {!isFirstTime && searchType === 'vendor'
+                  ? 'Results (' + result.length + ')'
+                  : 'Results (' + resultProduct.length + ')'}
+              </Text>
+            </View>
+          </View>
+        )}
+        {/* seacrch result  */}
+
+        {loading ? (
+          <View style={{marginTop: 40}}>
+            <ActivityIndicator show={loading} size="large" />
+          </View>
+        ) : (
+          <View>
+            {/* show response for vendor search */}
+            {searchType === 'vendor' ? (
+              <FlatList
+                ListEmptyComponent={
+                  !isFirstTime && (
+                    <Text
+                      style={[
+                        styles.categorySectionHeaderCategory,
+                        {textAlign: 'center', marginTop: 20, opacity: 0.5},
+                      ]}>
+                      No item found for {filter}
+                    </Text>
+                  )
+                }
+                keyExtractor={(item, index) => index.toString()}
+                data={result}
+                renderItem={({item, index}) => {
+                  return (
+                    <VendorsNearbyListitem
+                      key={index.toString()}
+                      item={item}
+                      index={index}
+                    />
+                  );
+                }}
+              />
+            ) : (
+              // show response for product search
+              <FlatList
+                style={styles.previousYouGrid}
+                ListEmptyComponent={
+                  !isFirstTime && (
+                    <Text
+                      style={[
+                        styles.categorySectionHeaderCategory,
+                        {textAlign: 'center', marginTop: 20, opacity: 0.5},
+                      ]}>
+                      No item found for {filter}
+                    </Text>
+                  )
+                }
+                keyExtractor={(item, index) => index.toString()}
+                data={resultProduct}
+                renderItem={({item, index}) => {
+                  return (
+                    <ProductListitem
+                      key={index.toString()}
+                      item={item}
+                      index={index}
+                    />
+                  );
+                }}
+              />
+            )}
+          </View>
+        )}
+      </ScrollView>
+      {/* {result.length === 0 && filter !== null && (
+        <Text style={styles.categorySectionHeaderCategory}>
+          No result found for {filter}
+        </Text>
+      )} */}
+
       {/* <View style={styles.previousYou}>
             
             <View style={styles.previousYouHeader}>
@@ -242,7 +434,7 @@ const styles = StyleSheet.create({
   category: {
     marginLeft: 15,
     marginRight: 15,
-    marginTop: 18,
+    marginTop: 10,
     flexDirection: 'column',
     // flex: 1
   },
@@ -270,7 +462,6 @@ const styles = StyleSheet.create({
     // flex: 1,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
     marginTop: 30,
   },
   categorySectionItem: {

@@ -11,13 +11,13 @@ function AuthNavigation() {
   //
   return (
     <RootStack.Navigator initialRouteName={firstLaunch ? 'Onboard' : 'SignIn'}>
-      <RootStack.Screen
+      {/* <RootStack.Screen
         options={{
           headerShown: false,
         }}
         name="Login"
         component={Login}
-      />
+      /> */}
       <RootStack.Screen
         options={{
           headerShown: false,

@@ -17,6 +17,8 @@ const CategoriesListItem = props => {
   const {item} = props;
   const {productCategory} = item;
 
+  // console.log(item);
+
   const fetchData = async () => {
     const res = await fetchCategory();
     setCategories(res);
@@ -28,7 +30,7 @@ const CategoriesListItem = props => {
   return (
     <TouchableOpacity
       style={styles.categorySectionItem}
-      onPress={() => navigation.navigate('SearchProduct')}>
+      onPress={() => navigation.navigate('SearchProduct', {item: item})}>
       <View style={[styles.categoryItemLogoBG, styles.bgColor2]}>
         <Image
           style={styles.categoryItemLogo}

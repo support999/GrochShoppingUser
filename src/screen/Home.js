@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useContext, useState} from 'react';
 import {
   Platform,
   StyleSheet,
@@ -28,39 +28,56 @@ import TopPick from './TopPick';
 
 import APP_URL from './../AppURL';
 import {ScrollView, StatusBar, useColorScheme} from 'react-native';
-import {fetchCategory} from '../data/data';
+import {addToBasket, fetchCategory, getBasket} from '../data/data';
+import {AuthContext} from '../context/AuthProvider';
+
 const Home = ({navigation}) => {
+  const {
+    setBasket,
+    basket,
+    reloadBasket,
+    setBadge,
+    setPayableAmount,
+    refreshFlatlist,
+    setRefreshFlatList,
+  } = useContext(AuthContext);
   const [isLoading, setLoading] = useState(true);
   const [Data, setData] = useState([]);
   //  state = {
   // Data: []
   // }
 
-  const componentDidMount = () => {
-    fetch(APP_URL.BaseURL + APP_URL.vendorSearch, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        Vendor_Name: 'mohan eye care ',
-      }),
-    })
-      .then(response => response.json())
-      .then(json => {
-        //  data = json
-        ({Data: json});
-        // console.log({Data: json});
-      })
-      .catch(error => {
-        console.error(error);
-      });
+  const fetchData = async () => {
+    const res = await getBasket();
+    setBasket(res);
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const onChange = val => {
+    navigation.navigate('FreqentSearch');
   };
 
   useEffect(() => {
-    // fetchCategory();
-  }, []);
+    calculateTotalPrice();
+    setRefreshFlatList(!refreshFlatlist);
+    addToBasket(basket);
+  }, [basket, reloadBasket]);
+
+  //   calcate the total of all items in the bag
+  const calculateTotalPrice = () => {
+    var totatPayableAMount = 0;
+    var totatQty = 0;
+
+    for (const iterator of basket) {
+      const {totalPrice, productQuantity} = iterator;
+      totatPayableAMount += totalPrice;
+      totatQty += productQuantity;
+    }
+    setPayableAmount(totatPayableAMount);
+    setBadge(totatQty);
+  };
 
   return (
     <SafeAreaView style={styles.AndroidSafeArea}>
@@ -68,7 +85,7 @@ const Home = ({navigation}) => {
       <View style={styles.container}>
         <Header />
 
-        <SearchBar />
+        <SearchBar showText onChange={onChange} />
         <OfferSlide />
 
         <ScrollView style={{padding: 0, margin: 0, flex: 1}}>

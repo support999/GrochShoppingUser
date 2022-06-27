@@ -14,9 +14,11 @@ import HomeStackScreen from './HomeStackScreen';
 import OrderStackNavigation from './OrderStackNavigation';
 import BagStackNavigation from './BagStackNavigation';
 import NotificationStackScreen from './NotificationStackNavigation';
+import {AuthContext} from '../context/AuthProvider';
 
 const BottomTab = ({navigation}) => {
   const isDarkMode = useColorScheme() === 'dark';
+  const {badge} = useContext(AuthContext);
 
   // <NavigationContainer>
   //   <Stack.Navigator
@@ -95,6 +97,7 @@ const BottomTab = ({navigation}) => {
         name="BagTab"
         component={BagStackNavigation}
         options={{
+          tabBarBadge: badge,
           tabBarLabel: 'Bag',
           tabBarIcon: ({focused, color, size}) => (
             <View style={{alignItems: 'center', justifyContent: 'center'}}>

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {baseUrl} from '../util/util';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from 'jwt-decode';
 
@@ -9,7 +9,7 @@ export const authNumber = '94717536777';
 export const getVerificationcode = async phoneNumber => {
   try {
     const res = await axios.get(
-      `${baseUrl}/Test/VerificationCode?phoneNumber=${phoneNumber}`,
+      `/Test/VerificationCode?phoneNumber=${phoneNumber}`,
     );
     return res.data.sessionInfo;
   } catch (error) {
@@ -29,7 +29,7 @@ const storeVerificationToken = async value => {
 export const signInWithPhoneNumber = async (sessionInfo, code) => {
   try {
     const res = await axios.get(
-      `${baseUrl}/Test/SignInWithPhoneNumber?sessionInfo=${sessionInfo}&code=${code}`,
+      `/Test/SignInWithPhoneNumber?sessionInfo=${sessionInfo}&code=${code}`,
     );
     return res.data;
   } catch (error) {
@@ -76,16 +76,18 @@ const getAuthToken = async () => {
   }
 };
 
-const setHeaders = token => {
+const setHeaders = async token => {
   axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+};
+
+export const initBaseurl = async url => {
+  axios.defaults.baseURL = url;
 };
 
 export const loadToken = async () => {
   // retrive stores token from the device
   try {
     const authToken = await getAuthToken();
-
-    console.log(authToken);
 
     const {idToken} = authToken;
 
@@ -95,10 +97,42 @@ export const loadToken = async () => {
       await AsyncStorage.removeItem('authTokens');
       loadToken();
     } else {
-      console.log('valid token');
       await setHeaders(idToken);
+      if (axios.defaults.headers.common.Authorization !== undefined) {
+        console.log('Header set');
+      } else {
+        console.log('Header is mising');
+      }
+      // console.log('token header ', axios.defaults.headers.common.Authorization);
     }
   } catch (error) {
     console.log(error);
+  }
+};
+
+// add popular search to the lis
+export const addFrequentSearch = async value => {
+  try {
+    const jsonValue = JSON.stringify(value);
+    await AsyncStorage.setItem('frequentSearch', jsonValue);
+  } catch (e) {
+    console.log(e);
+  }
+};
+// get popular search from the lis
+
+export const getFrequentSearch = async () => {
+  let frequentSearch = [];
+  try {
+    const jsonValue = await AsyncStorage.getItem('frequentSearch');
+    // if we have token on device
+    if (jsonValue !== null) {
+      frequentSearch = JSON.parse(jsonValue);
+    }
+    return frequentSearch;
+  } catch (e) {
+    // error reading value
+    console.log(e);
+    return frequentSearch;
   }
 };

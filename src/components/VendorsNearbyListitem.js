@@ -17,8 +17,19 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const VendrosNearByListItem = props => {
   const navigation = useNavigation();
-  const {item} = props;
-  const {shopName, vendorAddress, vendorOpeningTime, vendorClosingTime} = item;
+  const {item, productName} = props;
+  const {Vendor} = item;
+  const {
+    shopName,
+    ShopName,
+    vendorAddress,
+    VendorAddress,
+    vendorOpeningTime,
+    VendorName,
+    vendorClosingTime,
+    VendorClosingTime,
+    VendorProducts,
+  } = Vendor;
 
   const fetchData = async () => {
     const res = await fetchCategory();
@@ -31,7 +42,9 @@ const VendrosNearByListItem = props => {
   return (
     <TouchableOpacity
       style={styles.storeNearYouItem}
-      onPress={() => navigation.navigate('StoreDetails', {item: item})}>
+      onPress={() =>
+        navigation.navigate('StoreDetails', {item: item, productName})
+      }>
       <Image
         style={styles.storeNearItemLogo}
         source={require('./../assets/shopLogo.png')}></Image>
@@ -41,8 +54,10 @@ const VendrosNearByListItem = props => {
       </View>
       <View style={styles.storeNearItemDetails}>
         <View style={styles.storeNearItemInfo}>
-          <Text style={styles.storeNearItemName}>{shopName}</Text>
-          <Text style={styles.storeNearItemAddress}>{vendorAddress}</Text>
+          <Text style={styles.storeNearItemName}>{shopName || ShopName}</Text>
+          <Text style={styles.storeNearItemAddress}>
+            {vendorAddress || VendorAddress}
+          </Text>
 
           <View style={{flexDirection: 'row'}}>
             <FontAwesome style={styles.storeNearItemRating} name="star" />
@@ -53,7 +68,7 @@ const VendrosNearByListItem = props => {
           <View style={styles.storeNearItemTimeDiv}>
             <Text style={styles.storeNearItemActive}>Now Open</Text>
             <Text style={styles.storeNearItemTime}>
-              Close at: {vendorClosingTime} pm
+              Close at: {vendorClosingTime || VendorClosingTime} pm
             </Text>
           </View>
         </View>

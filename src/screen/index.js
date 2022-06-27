@@ -21,6 +21,7 @@ import Login from './Login';
 import NumberOtp from './NumberOtp';
 import UserDashboard from './UserDashboard';
 import Actionsheet from './Actionsheet';
+import VendorList from './VendorList';
 
 export {
   Home,
@@ -46,4 +47,5 @@ export {
   NumberOtp,
   UserDashboard,
   Actionsheet,
+  VendorList,
 };

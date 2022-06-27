@@ -1,0 +1,98 @@
+{
+  "project_info": {
+    "project_number": "620577116324",
+    "project_id": "grochouse-7c81b",
+    "storage_bucket": "grochouse-7c81b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:620577116324:android:d655b1d90235d2cbb3d631",
+        "android_client_info": {
+          "package_name": "com.grochouse.grochouse"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "620577116324-sc6vdkiuvgc2efdjdm5e3rcpq59jda7f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.grochouse.grochouse",
+            "certificate_hash": "cf5bca2b5133ebd915f220bafc8e5a9604f628f3"
+          }
+        },
+        {
+          "client_id": "620577116324-j5vkl3h5lkdi5llrua3ntvnnbenmucv4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQmgWJbPrdO1p_0PJF86_2NE-6axWHrU0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "620577116324-j5vkl3h5lkdi5llrua3ntvnnbenmucv4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "620577116324-lmclti1damd1pl1vctt1u9dto94nrlfj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.grochouse.grochouse"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:620577116324:android:76a7739ffe3c4568b3d631",
+        "android_client_info": {
+          "package_name": "com.grochouse3"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "620577116324-4mbbuql17ptvp19iu91jotkm7v9nre44.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.grochouse3",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "620577116324-j5vkl3h5lkdi5llrua3ntvnnbenmucv4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQmgWJbPrdO1p_0PJF86_2NE-6axWHrU0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "620577116324-j5vkl3h5lkdi5llrua3ntvnnbenmucv4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "620577116324-lmclti1damd1pl1vctt1u9dto94nrlfj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.grochouse.grochouse"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

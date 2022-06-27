@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -21,16 +21,54 @@ import SearchBar from './SearchBar';
 import OfferSlide from './OfferSlide';
 
 import {ScrollView, StatusBar, useColorScheme} from 'react-native';
+import {ActivityIndicator, ProductListitem} from '../components';
+import {searchVendorProduct} from '../data/data';
+
 const StoreDetails = ({navigation, route}) => {
-  const {item} = route.params;
-  const {shopName, vendorAddress, vendorOpeningTime, vendorClosingTime} = item;
+  const {item, productName} = route.params;
+  const {
+    shopName,
+    ShopName,
+    vendorAddress,
+    vendorProducts,
+    vendorOpeningTime,
+    vendorClosingTime,
+    VendorProducts,
+    VendorId,
+  } = item.Vendor;
+
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [filter, setFilter] = useState(null);
+
+  const fetchData = async (productName, VendorId) => {
+    setLoading(true);
+    const res = await searchVendorProduct(productName, VendorId);
+    setProducts(res);
+    setLoading(false);
+    // console.log(res);
+  };
+
+  useEffect(() => {
+    fetchData(productName, VendorId);
+    // vendorProductImage();
+  }, []);
+
+  const performSearch = () => {
+    fetchData(filter, VendorId);
+  };
+
+  const onChange = val => {
+    setFilter(val);
+    // console.log(val
+  };
 
   return (
     <View style={styles.main}>
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.TOback}
-          onPress={() => navigation.navigate('Home')}>
+          onPress={() => navigation.goBack()}>
           <AntDesign style={styles.backIcon} name="left" color="black" />
         </TouchableOpacity>
         <View style={styles.headerDetails}>
@@ -39,7 +77,7 @@ const StoreDetails = ({navigation, route}) => {
               (styles.storeName,
               {color: 'black', fontSize: 18, fontWeight: 'bold'})
             }>
-            {shopName}
+            {shopName || ShopName}
           </Text>
           <Text style={styles.address}>{vendorAddress}</Text>
           <View style={styles.SubHeader}>
@@ -53,7 +91,8 @@ const StoreDetails = ({navigation, route}) => {
         </View>
       </View>
 
-      <SearchBar></SearchBar>
+      <SearchBar onChange={onChange} doSomething={performSearch} />
+
       <OfferSlide></OfferSlide>
 
       <ScrollView>
@@ -113,7 +152,7 @@ const StoreDetails = ({navigation, route}) => {
           </View>
         </View>
 
-        <View style={styles.previousYou}>
+        {/* <View style={styles.previousYou}>
           <View style={styles.previousYouHeader}>
             <Text style={styles.previousYouHeaderFevorit}>
               From your previous order
@@ -142,35 +181,31 @@ const StoreDetails = ({navigation, route}) => {
               </View>
             </TouchableOpacity>
           </View>
-        </View>
+        </View> */}
 
         <View style={styles.previousYou}>
           <View style={styles.previousYouHeader}>
-            <Text style={styles.previousYouHeaderFevorit}>Rice & Oil</Text>
+            <Text style={styles.previousYouHeaderFevorit}>Store Products</Text>
           </View>
 
-          <ScrollView style={styles.previousYouGrid}>
-            <TouchableOpacity
-              style={styles.previousYouItem}
-              onPress={() => navigation.navigate('StoreDetails')}>
-              <Image
-                style={styles.previousItemLogo}
-                source={require('./../assets/product1.png')}></Image>
-              <View style={styles.previousItemInfo}>
-                <Text style={styles.previousItemName}>
-                  American Garden U.S. Peanut Butter Chunky
-                </Text>
-                <Text style={styles.previousItemPriceQtt}>60/ kg</Text>
-
-                <View style={styles.previousItemRSandBuy}>
-                  <Text style={styles.previousItemRS}>RS 35</Text>
-                  <View style={styles.previousItemBTN}>
-                    <Text style={styles.previousItemBTNtext}>Add Basket</Text>
-                  </View>
-                </View>
-              </View>
-            </TouchableOpacity>
-          </ScrollView>
+          {loading ? (
+            <View style={{marginTop: 40}}>
+              <ActivityIndicator show={loading} size="large" />
+            </View>
+          ) : (
+            <ScrollView style={styles.previousYouGrid}>
+              {products?.map((item, index) => {
+                return (
+                  <ProductListitem
+                    key={index.toString()}
+                    item={item.Product}
+                    index={index}
+                    showBasket
+                  />
+                );
+              })}
+            </ScrollView>
+          )}
         </View>
       </ScrollView>
     </View>

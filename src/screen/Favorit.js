@@ -31,7 +31,7 @@ const Favorit = () => {
   return (
     <View style={styles.fevoritSection}>
       <View style={styles.fevoritSectionHeader}>
-        <Text style={styles.fevoritSectionHeaderFevorit}>Order Again</Text>
+        <Text style={styles.fevoritSectionHeaderFevorit}>Previous Vendor</Text>
         <Text style={styles.fevoritSectionHeaderHistory}>View History</Text>
       </View>
 

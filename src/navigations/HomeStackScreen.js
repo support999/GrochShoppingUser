@@ -15,6 +15,7 @@ import {
   NumberOtp,
   UserDashboard,
   Actionsheet,
+  VendorList,
 } from '../screen';
 const HomeStack = createNativeStackNavigator();
 
@@ -81,6 +82,11 @@ function HomeStackScreen() {
       <HomeStack.Screen
         name="Actionsheet"
         component={Actionsheet}
+        Options={{header: () => true}}
+      />
+      <HomeStack.Screen
+        name="VendorList"
+        component={VendorList}
         Options={{header: () => true}}
       />
     </HomeStack.Navigator>
