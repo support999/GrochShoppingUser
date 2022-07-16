@@ -45,7 +45,7 @@ const NumberOtp = ({navigation}) => {
   }
 
   async function signInWithPhoneNumber(phoneNumber) {
-    const fullNumber = '+91' + phoneNumber;
+    const fullNumber = countryCallingCode + phoneNumber;
     console.log(fullNumber);
     try {
       const confirmation = await auth().signInWithPhoneNumber(fullNumber);

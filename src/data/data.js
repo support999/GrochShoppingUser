@@ -1,5 +1,6 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import moment from 'moment';
 
 // fetch list of category
 export const fetchCategory = async () => {
@@ -16,20 +17,20 @@ export const fetchCategory = async () => {
 export const vendorsNearby = async location => {
   try {
     const res = await axios.get(
-      `/Vendor/VenderNearBy?latitude=${location.lat}&longitude=${location.lng}`,
+      `Vendor/VenderNearByMe?productId=263113&latitude=23.2164638&longitude=77.389849&service=Grocery&userId=12&radius=15`,
     );
-    return res.data.result;
+    return res.data;
   } catch (error) {
-    console.log(error);
+    console.log('Vendors nearby', error);
     return [];
   }
 };
 
 //
-export const fetchHistory = async () => {
+export const fetchHistory = async customerId => {
   try {
-    const res = await axios.get(`/Order/History?customerId=11`);
-    // console.log(res.data.result[163]);
+    const res = await axios.get(`/Order/History?customerId=${customerId}`);
+    return res.data;
   } catch (error) {
     console.log(error);
     return [];
@@ -45,17 +46,13 @@ export const checkHeaderParameter = () => {
 // return list of product based on the searched work
 export const searchProductByName = async name => {
   try {
-    console.log('searching for ', name);
+    console.log('search for ', name);
 
     const res = await axios.get(
-      // return image
-      // `/Product/VenderProductImage?name=Sticks - Jeera Bread`,
-
-      // returns lit of product by name
-      `/Product/VenderProductByName?name=${name}`,
+      `Vendor/NearByVenderProduct?productname=${name}&latitude=23.2164638&longitude=77.389849&service=Grocery&userId=12&radius=15.00`,
     );
 
-    return res.data;
+    return res.data.result;
   } catch (error) {
     console.log(error);
     return [];
@@ -96,39 +93,34 @@ export const searchVendorByProductName = async name => {
 };
 
 // getting vendor product Image
-export const vendorProductImage = async () => {
-  // http://164.52.219.97/Grochouse_V2/api/Product/VenderProductImage?name=Cheese%20-%20Gouda
+export const vendorProductImage = async name => {
   try {
-    const res = await axios.get(
-      // return image
-      `/Product/VenderProductImage?name=Sticks - Jeera Bread`,
-
-      // returns list of vendors that sells a producr product similar to vendor nearby
-      // `/Search/VenderProducts?name=rice`,
-
-      // returns a particulr vendoer information contains vendors product
-      // `/Vendor/VenderByName?name=ADAYAT RICE & FLOUR MILL"`,
-
-      // returns lit of product by name
-      // `/Product/VenderProductByName?name=bread`,
-    );
-    console.log(res.data);
+    const res = await axios.get(`/Product/VenderProductImage?name=${name}`);
+    return res?.data?.result[0];
   } catch (error) {
     console.log(error);
-    return [];
+    return null;
   }
 };
 
 // add to bag method
-export const addToBag = (item, currentbag) => {
+export const addToBag = (item, currentbag, customerId, vendorId) => {
   const newItem = {
     productName: item.productName || item.ProductName,
     productPrice: item.productPrice || item.ProductPrice,
-    totalPrice: item.productPrice || item.ProductPrice,
     productImage: item.productImage || item.ProductImage,
     productWeight: item.productWeight || item.ProductWeight,
-    productQuantity: 1,
-    productId: item.productId || item.ProductId,
+
+    orderProductId: 0,
+    orderId: 0,
+    vendorProductId: item.productId || item.ProductId,
+    price: item.productPrice || item.ProductPrice,
+    quantity: 1,
+    createdDate: moment().format('YYYY-MM-DD').toString(),
+    modifiedDate: moment().format('YYYY-MM-DD').toString(),
+    createdBy: customerId.toString(),
+    modifiedBy: customerId.toString(),
+    vendorId,
   };
   // console.log(newItem);
   var tempSearch = [];
@@ -147,6 +139,7 @@ export const searchVendorByProductId = async (productId, location) => {
       `/Vendor/VenderNearBy?productId=${productId}&latitude=${location.lat}&longitude=${location.lng}&service=Grocery&userId=12&radius=15.00`,
       // `/Search/VenderProducts?ProductId=${productId}&latitude=${location.lat}&longitude=${location.lng}`,
     );
+    console.log(res.data);
     return res.data;
   } catch (error) {
     console.log(error);
@@ -166,14 +159,109 @@ export const addToBasket = async value => {
 };
 
 export const getBasket = async () => {
+  var basket = [];
   try {
     const jsonValue = await AsyncStorage.getItem('bag');
     // if we have token on device
     if (jsonValue !== null) {
-      return JSON.parse(jsonValue);
+      basket = JSON.parse(jsonValue);
     }
+    return basket;
   } catch (e) {
     // error reading value
     console.log(e);
+    return basket;
+  }
+};
+
+export const removeFromAsyncStorage = async name => {
+  try {
+    AsyncStorage.removeItem(name);
+    // if we have token on device
+  } catch (e) {
+    // error reading value
+    console.log(e);
+  }
+};
+
+// top pick
+export const getTopPickProducts = async userId => {
+  try {
+    const res = await axios.get(`/Vendor/TopPickups?customerId=${userId}`);
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+};
+
+// save orderf product t tot the data base
+export const orderProduct = async (bag, customerId) => {
+  const body = {
+    orderId: 0,
+    vendorId: 214049,
+    customerId: customerId,
+    currencyId: 1,
+    totalQuantity: 1,
+    orderBookedDate: null,
+    orderAcceptedDate: null,
+    orderCancelledDate: null,
+    orderDeliveredDate: null,
+    orderPickedDate: null,
+    orderRefundInitiatedDate: null,
+    orderRefundCompletedDate: null,
+    orderProcessedDate: null,
+    isOrderCancelled: 0,
+    isOrderCancelledByCustomer: 0,
+    isOrderCancelledByVendor: 0,
+    initialEstimatedDeliveryTimeInMinutes: null,
+    paymentModeId: null,
+    totalPrice: null,
+    netPrice: null,
+    discounts: null,
+    deliveryCharges: null,
+    taxCharges: null,
+    orderStatusId: null,
+    createdDate: null,
+    modifiedDate: null,
+    createdBy: null,
+    modifiedBy: null,
+    orderProductsDto: bag,
+  };
+  // console.log(bag[0].vendorId);
+
+  try {
+    const res = await axios.post('/Order/Orders', body);
+    console.log('respons', res.data);
+    return res.data;
+  } catch (error) {
+    console.log(' order error ', error);
+    return null;
+  }
+};
+
+// top purchsed vendors
+export const getPreviousVendors = async userId => {
+  try {
+    const res = await axios.get(
+      `/Vendor/TopVendorByCustomerId?customerId=${userId}`,
+    );
+    return res.data.result;
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+};
+
+// get nearby vendor banner
+export const getVendorBanner = async (location, userId) => {
+  try {
+    const res = await axios.get(
+      `/Vendor/VendorBanner?latitude=${location.lat}&longitude=${location.lng}&radius=10&userId=${userId}`,
+    );
+    return res.data.result;
+  } catch (error) {
+    console.log(error);
+    return [];
   }
 };

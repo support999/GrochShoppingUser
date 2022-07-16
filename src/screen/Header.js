@@ -38,28 +38,6 @@ const Header = ({}) => {
   const navigation = useNavigation();
   const [address, setAddress] = useState(null);
 
-  const componentDidMount = () => {
-    fetch(APP_URL.BaseURL + APP_URL.vendorSearch, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        Vendor_Name: 'mohan eye care ',
-      }),
-    })
-      .then(response => response.json())
-      .then(json => {
-        //  data = json
-        ({Data: json});
-        // console.log({Data: json});
-      })
-      .catch(error => {
-        console.error(error);
-      });
-  };
-
   useEffect(() => {
     getLocation();
   }, []);
@@ -76,7 +54,7 @@ const Header = ({}) => {
     var streetName = add?.streetName;
     var adminArea = add?.adminArea;
 
-    console.log('street name', streetName);
+    // console.log('street name', streetName);
     // var {streetName, adminArea} = add;
     var fullAddress = '';
     if (streetNumber && streetNumber !== null) fullAddress = streetNumber;

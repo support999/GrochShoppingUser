@@ -25,7 +25,7 @@ import {ActivityIndicator, ProductListitem} from '../components';
 import {searchVendorProduct} from '../data/data';
 
 const StoreDetails = ({navigation, route}) => {
-  const {item, productName} = route.params;
+  const {item, productName, type} = route.params;
   const {
     shopName,
     ShopName,
@@ -35,7 +35,7 @@ const StoreDetails = ({navigation, route}) => {
     vendorClosingTime,
     VendorProducts,
     VendorId,
-  } = item.Vendor;
+  } = type === 1 ? item : item.Vendor;
 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -201,6 +201,7 @@ const StoreDetails = ({navigation, route}) => {
                     item={item.Product}
                     index={index}
                     showBasket
+                    vendorId={VendorId}
                   />
                 );
               })}

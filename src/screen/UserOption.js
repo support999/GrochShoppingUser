@@ -12,13 +12,9 @@ import {
   FlatList,
   Alert,
 } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import Entypo from 'react-native-vector-icons/Entypo';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import Favorit from './Favorit';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+
 const {height, width} = Dimensions.get('screen');
 
 const data = [
@@ -56,8 +52,8 @@ const UserOption = ({navigation}) => {
   const {url, setUrl} = useContext(AuthContext);
 
   return (
-    <View style={styles.main}>
-      <ScrollView>
+    <KeyboardAwareScrollView style={{backgroundColor: '#fff'}}>
+      <View style={styles.main}>
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.navigate('Login')}>
             <Image
@@ -156,8 +152,8 @@ const UserOption = ({navigation}) => {
             {/* </TouchableOpacity> */}
           </View>
         </View>
-      </ScrollView>
-    </View>
+      </View>
+    </KeyboardAwareScrollView>
   );
 };
 

@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,34 +9,46 @@ import {
 } from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
-import {fetchCategory} from '../data/data';
+import {fetchCategory, vendorProductImage} from '../data/data';
 import {AuthContext} from '../context/AuthProvider';
 
-const CategoriesListItem = props => {
+const TopPickListItem = props => {
   const navigation = useNavigation();
-  const {item} = props;
-  const {productCategory} = item;
+  const [image, setImage] = useState(null);
 
-  // console.log(item);
+  const {item} = props;
+  const {productName, productId} = item;
+
+  // console.log(productName);
 
   const fetchData = async () => {
-    const res = await fetchCategory();
-    setCategories(res);
+    const res = await vendorProductImage(productName);
+    setImage(res);
   };
 
   useEffect(() => {
-    // fetchData;
+    fetchData();
   }, []);
+
   return (
     <TouchableOpacity
       style={styles.categorySectionItem}
-      onPress={() => navigation.navigate('SearchProduct', {item: item})}>
-      <View style={[styles.categoryItemLogoBG, styles.bgColor2]}>
+      onPress={() =>
+        navigation.navigate('VendorList', {
+          productId: productId,
+          productName: productName,
+        })
+      }>
+      <View style={[styles.categoryItemLogoBG, styles.bgColor3]}>
         <Image
           style={styles.categoryItemLogo}
-          source={require('./../assets/Eggs,Meat&Fish.png')}></Image>
+          source={
+            image !== null
+              ? {uri: image}
+              : require('./../assets/Beauty&Hygiene.png')
+          }></Image>
       </View>
-      <Text style={styles.categoryItemName}>{productCategory}</Text>
+      <Text style={styles.categoryItemName}>{productName}</Text>
     </TouchableOpacity>
   );
 };
@@ -121,6 +133,7 @@ const styles = StyleSheet.create({
   categoryItemName: {
     fontSize: 9,
     color: '#22292E',
+    textAlign: 'center',
   },
   bgColor1: {
     backgroundColor: '#47CA19',
@@ -137,4 +150,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CategoriesListItem;
+export default TopPickListItem;

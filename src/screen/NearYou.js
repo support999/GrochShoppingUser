@@ -52,7 +52,7 @@ const NearYou = () => {
             if (index < 6)
               return (
                 <VendorsNearbyListitem
-                  key={item.vendorGuid}
+                  key={index.toString()}
                   item={item}
                   index={index}
                   navigation={navigation}

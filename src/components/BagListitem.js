@@ -27,37 +27,46 @@ const BagListItem = props => {
     productQuantity,
     productId,
     totalPrice,
+
+    //
+    price,
+    quantity,
+    vendorProductId,
   } = item;
-  const [quantity, setQuantity] = useState(productQuantity);
-  const [price, setPrice] = useState(totalPrice);
+  const [quantityQ, setQuantityO] = useState(quantity);
+  const [priceP, setPriceP] = useState(price);
 
   const increamentQty = async task => {
     if (task === 'add') {
-      const counter = quantity + 1;
-      setQuantity(counter);
+      var counter = quantityQ + 1;
+      setQuantityO(counter);
       const newPrice = await calculatePrice(counter);
       updateBasket(counter, newPrice);
+      counter = 0;
     } else {
-      if (quantity > 1) {
-        const counter = quantity - 1;
-        setQuantity(counter);
+      if (quantityQ > 1) {
+        var counter = quantityQ - 1;
+        setQuantityO(counter);
         const newPrice = await calculatePrice(counter);
         updateBasket(counter, newPrice);
+        counter = 0;
       }
     }
   };
 
   const calculatePrice = counter => {
     const totalPrice = counter * productPrice;
-    setPrice(totalPrice);
+    setPriceP(totalPrice);
     return totalPrice;
   };
 
   const updateBasket = (newQuantity, newPrice) => {
-    const index = basket.findIndex(item => item.productId === productId);
+    const index = basket.findIndex(
+      item => item.vendorProductId === vendorProductId,
+    );
     if (index >= 0) {
-      basket[index].totalPrice = newPrice;
-      basket[index].productQuantity = newQuantity;
+      basket[index].price = newPrice;
+      basket[index].quantity = newQuantity;
       // setBasket(basket);
       // console.log(basket);
       setReloadBasket(!reloadBasket);
@@ -65,7 +74,9 @@ const BagListItem = props => {
   };
 
   const removeItem = () => {
-    const index = basket.findIndex(item => item.productId === productId);
+    const index = basket.findIndex(
+      item => item.vendorProductId === vendorProductId,
+    );
     if (index >= 0) {
       var tempArray = basket;
       tempArray.splice(index, 1);
@@ -114,7 +125,7 @@ const BagListItem = props => {
           style={styles.closeIcon}>
           <Ionicons style={styles.closeIcon1} name="close" />
         </TouchableOpacity>
-        <Text style={[styles.totalPrice]}>{price} .Rs</Text>
+        <Text style={[styles.totalPrice]}>{priceP} .Rs</Text>
       </View>
     </TouchableOpacity>
   );

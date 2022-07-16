@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -12,16 +12,17 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import {fetchCategory} from '../data/data';
 import {AuthContext} from '../context/AuthProvider';
-import {CategoriesListitem} from '../components';
+import {ActivityIndicator, CategoriesListitem} from '../components';
 
 const ShopsCategory = () => {
   const navigation = useNavigation();
   const {categories, setCategories} = useContext(AuthContext);
+  const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
     const res = await fetchCategory();
-
     setCategories(res);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -36,24 +37,36 @@ const ShopsCategory = () => {
         </TouchableOpacity>
       </View>
 
-      <ScrollView
-        contentContainerStyle={{
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-        }}
-        showsHorizontalScrollIndicator={false}>
-        {categories?.map((item, index) => {
-          if (index < 6)
-            return (
-              <CategoriesListitem
-                key={item.productCategoryId}
-                item={item}
-                index={index}
-                navigation={navigation}
-              />
-            );
-        })}
-      </ScrollView>
+      {loading ? (
+        <View
+          style={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            flex: 1,
+            margin: 20,
+          }}>
+          <ActivityIndicator size={'large'} show={loading} />
+        </View>
+      ) : (
+        <ScrollView
+          contentContainerStyle={{
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+          }}
+          showsHorizontalScrollIndicator={false}>
+          {categories?.map((item, index) => {
+            if (index < 6)
+              return (
+                <CategoriesListitem
+                  key={item.productCategoryId}
+                  item={item}
+                  index={index}
+                  navigation={navigation}
+                />
+              );
+          })}
+        </ScrollView>
+      )}
 
       {/* <TouchableOpacity
           style={styles.categorySectionItem}

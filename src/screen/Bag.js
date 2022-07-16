@@ -8,6 +8,7 @@ import {
   FlatList,
   TouchableOpacity,
   Image,
+  Alert,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -15,77 +16,107 @@ import Entypo from 'react-native-vector-icons/Entypo';
 
 import {StatusBar} from 'react-native';
 import {AuthContext} from '../context/AuthProvider';
-import {BagListitem} from '../components';
-import {addToBasket} from '../data/data';
+import {ActivityIndicator, BagListitem} from '../components';
+import {addToBasket, orderProduct, removeFromAsyncStorage} from '../data/data';
 
 const actionSheetRef = createRef();
 
-const Action = ({navigation, totalPrice}) => (
-  <ActionSheet ref={actionSheetRef}>
-    <View style={{height: '70%'}}>
-      <View style={[sheetStyle.sheetHead]}>
-        <Text style={sheetStyle.headName}>Checkout</Text>
-        <TouchableOpacity
-          onPress={() => {
-            actionSheetRef.current?.setModalVisible(false);
-          }}
-          style={styles.closeIcon}>
-          <Ionicons style={sheetStyle.closeIcon1} name="close" />
-        </TouchableOpacity>
-      </View>
-      <View style={[sheetStyle.sheetItem]}>
-        <Text style={sheetStyle.itemName}>Delivery Address</Text>
-        <TouchableOpacity style={sheetStyle.righticon}>
-          <Text style={sheetStyle.optn}>Select Address</Text>
-          <AntDesign style={sheetStyle.right} name="right" color="black" />
-        </TouchableOpacity>
-      </View>
-      <View style={[sheetStyle.sheetItem]}>
-        <Text style={sheetStyle.itemName}>Payment</Text>
-        <TouchableOpacity style={sheetStyle.righticon}>
-          <Text style={sheetStyle.optn}></Text>
-          <AntDesign style={sheetStyle.right} name="right" color="black" />
-        </TouchableOpacity>
-      </View>
-      <View style={[sheetStyle.sheetItem]}>
-        <Text style={sheetStyle.itemName}>Promo Code</Text>
-        <TouchableOpacity style={sheetStyle.righticon}>
-          <Text style={sheetStyle.optn}>Pick Discount</Text>
-          <AntDesign style={sheetStyle.right} name="right" color="black" />
-        </TouchableOpacity>
-      </View>
-      <View style={[sheetStyle.sheetItem]}>
-        <Text style={sheetStyle.itemName}>Total Cost</Text>
-        <TouchableOpacity style={sheetStyle.righticon}>
-          <Text style={sheetStyle.optn}>{totalPrice}</Text>
-          <AntDesign style={sheetStyle.right} name="right" color="black" />
-        </TouchableOpacity>
-      </View>
+const Action = ({navigation, totalPrice, basket}) => {
+  const {setReloadOrder, setBasket} = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
+  const saveOrder = async () => {
+    try {
+      const res = await orderProduct(basket, 12);
+      if (res) {
+        setReloadOrder(true);
+        Alert.alert('Purchase Successful');
+        removeFromAsyncStorage('bag');
+        navigation.navigate('OrderTab');
+        setBasket([]);
+        actionSheetRef.current?.setModalVisible(false);
+      } else Alert.alert('unable to complete your purchase');
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+      Alert.alert('unable to complete your purchase');
+    }
+  };
+  return (
+    <ActionSheet ref={actionSheetRef}>
+      <View style={{height: '70%'}}>
+        <View style={[sheetStyle.sheetHead]}>
+          <Text style={sheetStyle.headName}>Checkout</Text>
+          <TouchableOpacity
+            onPress={() => {
+              actionSheetRef.current?.setModalVisible(false);
+            }}
+            style={styles.closeIcon}>
+            <Ionicons style={sheetStyle.closeIcon1} name="close" />
+          </TouchableOpacity>
+        </View>
+        <View style={[sheetStyle.sheetItem]}>
+          <Text style={sheetStyle.itemName}>Delivery Address</Text>
+          <TouchableOpacity style={sheetStyle.righticon}>
+            <Text style={sheetStyle.optn}>Select Address</Text>
+            <AntDesign style={sheetStyle.right} name="right" color="black" />
+          </TouchableOpacity>
+        </View>
+        <View style={[sheetStyle.sheetItem]}>
+          <Text style={sheetStyle.itemName}>Payment</Text>
+          <TouchableOpacity style={sheetStyle.righticon}>
+            <Text style={sheetStyle.optn}></Text>
+            <AntDesign style={sheetStyle.right} name="right" color="black" />
+          </TouchableOpacity>
+        </View>
+        <View style={[sheetStyle.sheetItem]}>
+          <Text style={sheetStyle.itemName}>Promo Code</Text>
+          <TouchableOpacity style={sheetStyle.righticon}>
+            <Text style={sheetStyle.optn}>Pick Discount</Text>
+            <AntDesign style={sheetStyle.right} name="right" color="black" />
+          </TouchableOpacity>
+        </View>
+        <View style={[sheetStyle.sheetItem]}>
+          <Text style={sheetStyle.itemName}>Total Cost</Text>
+          <TouchableOpacity style={sheetStyle.righticon}>
+            <Text style={sheetStyle.optn}>{totalPrice}</Text>
+            <AntDesign style={sheetStyle.right} name="right" color="black" />
+          </TouchableOpacity>
+        </View>
 
-      <View style={[sheetStyle.sheetItem]}>
-        <Text style={sheetStyle.terms}>
-          By placing an order you agree to our
-          <Text style={[sheetStyle.terms, {color: 'black'}]}> Terms</Text> And
-          <Text style={[sheetStyle.terms, {color: 'black'}]}> Conditions</Text>
-        </Text>
-        {/* <TouchableOpacity style={sheetStyle.righticon} >
+        <View style={[sheetStyle.sheetItem]}>
+          <Text style={sheetStyle.terms}>
+            By placing an order you agree to our
+            <Text style={[sheetStyle.terms, {color: 'black'}]}> Terms</Text> And
+            <Text style={[sheetStyle.terms, {color: 'black'}]}>
+              {' '}
+              Conditions
+            </Text>
+          </Text>
+          {/* <TouchableOpacity style={sheetStyle.righticon} >
                     <Text style={sheetStyle.optn}>13.97</Text>
                     <Ionicons style={sheetStyle.right} name='close' />
                 </TouchableOpacity> */}
-      </View>
+        </View>
 
-      <View style={[sheetStyle.sheetItem]}>
-        <View style={[sheetStyle.checkout]}>
-          <TouchableOpacity
-            style={[sheetStyle.checkoutBtn]}
-            onPress={() => navigation.navigate('Payment')}>
-            <Text style={[sheetStyle.checkoutText]}>Place Order</Text>
-          </TouchableOpacity>
+        <View style={[sheetStyle.sheetItem]}>
+          <View style={[sheetStyle.checkout]}>
+            {loading ? (
+              <ActivityIndicator show={loading} color={'#DB3022'} />
+            ) : (
+              <TouchableOpacity
+                style={[sheetStyle.checkoutBtn]}
+                onPress={() => {
+                  saveOrder(basket, 12);
+                }}>
+                <Text style={[sheetStyle.checkoutText]}>Place Order</Text>
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
       </View>
-    </View>
-  </ActionSheet>
-);
+    </ActionSheet>
+  );
+};
 
 const Bag = ({navigation}) => {
   const {
@@ -135,7 +166,11 @@ const Bag = ({navigation}) => {
           </View>
         </TouchableOpacity>
       </View>
-      <Action navigation={navigation} totalPrice={payableAmount} />
+      <Action
+        navigation={navigation}
+        totalPrice={payableAmount}
+        basket={basket}
+      />
     </View>
   );
 };

@@ -12,17 +12,19 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import {searchVendorByProductId} from '../data/data';
 import {AuthContext} from '../context/AuthProvider';
-import {VendorsNearbyListitem} from '../components';
+import {ActivityIndicator, VendorsNearbyListitem} from '../components';
 import Geolocation from 'react-native-geolocation-service';
 import {hasLocationPermission} from '../util/util';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 const NearYou = ({route}) => {
+  const {location} = useContext(AuthContext);
+  // console.log(location);
   const {productId, productName} = route.params;
 
   const navigation = useNavigation();
   const [vendorsNearBy, setVendorsNearBy] = useState([]);
-  const [location, setLocation] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const getLocation = async () => {
     const hasPermission = await hasLocationPermission();
@@ -60,12 +62,13 @@ const NearYou = ({route}) => {
 
   const fetchData = async () => {
     const res = await searchVendorByProductId(productId, location);
-    console.log('From Vendor ', res);
+    //sconsole.log('From Vendor ', res);
     setVendorsNearBy(res);
+    setLoading(false);
   };
 
   useEffect(() => {
-    getLocation();
+    // getLocation();
     // vendorProductImage();
   }, []);
 
@@ -99,20 +102,34 @@ const NearYou = ({route}) => {
       </View>
 
       <View style={styles.storeNearYouGrid}>
-        <ScrollView showsHorizontalScrollIndicator={false}>
-          {vendorsNearBy?.map((item, index) => {
-            return (
-              <VendorsNearbyListitem
-                key={item.Vendor.VendorId}
-                item={item}
-                index={index}
-                navigation={navigation}
-                productName={productName}
-              />
-            );
-          })}
-        </ScrollView>
-
+        {!loading && vendorsNearBy.length > 0 ? (
+          <ScrollView showsHorizontalScrollIndicator={false}>
+            {vendorsNearBy?.map((item, index) => {
+              return (
+                <VendorsNearbyListitem
+                  key={item.Vendor.VendorId}
+                  item={item}
+                  index={index}
+                  navigation={navigation}
+                  productName={productName}
+                />
+              );
+            })}
+          </ScrollView>
+        ) : (
+          <View
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              flex: 1,
+            }}>
+            {loading ? (
+              <ActivityIndicator size={'large'} show={loading} />
+            ) : (
+              <Text style={{fontSize: 18}}>No Vendors Found</Text>
+            )}
+          </View>
+        )}
         {/* <TouchableOpacity
           style={styles.storeNearYouItem}
           onPress={() => navigation.navigate('StoreDetails')}>
@@ -250,6 +267,7 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     margin: 10,
     marginTop: 0,
+    lineHeight: 20,
     // height: 50
   },
   fevoritSectionHeaderHistory: {

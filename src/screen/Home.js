@@ -28,10 +28,16 @@ import TopPick from './TopPick';
 
 import APP_URL from './../AppURL';
 import {ScrollView, StatusBar, useColorScheme} from 'react-native';
-import {addToBasket, fetchCategory, getBasket} from '../data/data';
+import {
+  addToBasket,
+  fetchCategory,
+  fetchHistory,
+  getBasket,
+} from '../data/data';
 import {AuthContext} from '../context/AuthProvider';
 
 const Home = ({navigation}) => {
+  // console.log(moment().format('YYYY:MM:DD'));
   const {
     setBasket,
     basket,
@@ -40,6 +46,10 @@ const Home = ({navigation}) => {
     setPayableAmount,
     refreshFlatlist,
     setRefreshFlatList,
+    orders,
+    setOrders,
+    reloadOrder,
+    setReloadOrder,
   } = useContext(AuthContext);
   const [isLoading, setLoading] = useState(true);
   const [Data, setData] = useState([]);
@@ -51,6 +61,7 @@ const Home = ({navigation}) => {
     const res = await getBasket();
     setBasket(res);
   };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -60,9 +71,11 @@ const Home = ({navigation}) => {
   };
 
   useEffect(() => {
-    calculateTotalPrice();
-    setRefreshFlatList(!refreshFlatlist);
-    addToBasket(basket);
+    if (basket?.length > 0) {
+      calculateTotalPrice();
+      setRefreshFlatList(!refreshFlatlist);
+      addToBasket(basket);
+    }
   }, [basket, reloadBasket]);
 
   //   calcate the total of all items in the bag
@@ -71,12 +84,22 @@ const Home = ({navigation}) => {
     var totatQty = 0;
 
     for (const iterator of basket) {
-      const {totalPrice, productQuantity} = iterator;
-      totatPayableAMount += totalPrice;
-      totatQty += productQuantity;
+      const {price, quantity} = iterator;
+      totatPayableAMount += price;
+      totatQty += quantity;
     }
     setPayableAmount(totatPayableAMount);
     setBadge(totatQty);
+  };
+
+  useEffect(() => {
+    if (reloadOrder) getOrderHistory();
+  }, [reloadOrder]);
+
+  const getOrderHistory = async () => {
+    const orederRes = await fetchHistory(12);
+    setOrders(orederRes);
+    setReloadOrder(false);
   };
 
   return (

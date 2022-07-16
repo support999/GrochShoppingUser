@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -11,17 +11,23 @@ import {
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import Entypo from 'react-native-vector-icons/Entypo';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+
 import {ScrollView, StatusBar, useColorScheme} from 'react-native';
-import {fetchHistory} from '../data/data';
+import {fetchHistory, getPreviousVendors} from '../data/data';
+import {ActivityIndicator, PreviousVendorListItem} from '../components';
+import {AuthContext} from '../context/AuthProvider';
+import {useNavigation} from '@react-navigation/native';
+
 const Favorit = () => {
+  const {previousVendors, setPreviuosVendors} = useContext(AuthContext);
+  const [loading, setLoading] = useState(true);
+  const navigation = useNavigation();
+
   const fetchData = async () => {
-    const res = await fetchHistory();
+    const res = await getPreviousVendors(1);
     // console.log(res[1]);
-    // setVendorsNearBy(res);
+    setPreviuosVendors(res);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -36,49 +42,36 @@ const Favorit = () => {
       </View>
 
       <View style={styles.fevoritSectionGrid}>
-        <View style={styles.fevoritSectionItem}>
-          <Image
-            style={styles.fevoritItemLogo}
-            source={require('./../assets/shopLogo.png')}></Image>
-          <View style={styles.fevoritItemDetails}>
-            <Text style={styles.fevoritItemName}>Jain kirana store</Text>
-            <Text style={styles.fevoritItemDistance}>1.5 km</Text>
-            <AntDesign style={styles.fevoritItemRating} name="star" />
+        {loading ? (
+          <View
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              flex: 1,
+              margin: 20,
+            }}>
+            <ActivityIndicator size={'large'} show={loading} />
           </View>
-        </View>
-
-        <View style={styles.fevoritSectionItem}>
-          <Image
-            style={styles.fevoritItemLogo}
-            source={require('./../assets/shopLogo.png')}></Image>
-          <View style={styles.fevoritItemDetails}>
-            <Text style={styles.fevoritItemName}>Jain kirana store</Text>
-            <Text style={styles.fevoritItemDistance}>1.5 km</Text>
-            <AntDesign style={styles.fevoritItemRating} name="star" />
-          </View>
-        </View>
-
-        <View style={styles.fevoritSectionItem}>
-          <Image
-            style={styles.fevoritItemLogo}
-            source={require('./../assets/shopLogo.png')}></Image>
-          <View style={styles.fevoritItemDetails}>
-            <Text style={styles.fevoritItemName}>Jain kirana store</Text>
-            <Text style={styles.fevoritItemDistance}>1.5 km</Text>
-            <AntDesign style={styles.fevoritItemRating} name="star" />
-          </View>
-        </View>
-
-        <View style={styles.fevoritSectionItem}>
-          <Image
-            style={styles.fevoritItemLogo}
-            source={require('./../assets/shopLogo.png')}></Image>
-          <View style={styles.fevoritItemDetails}>
-            <Text style={styles.fevoritItemName}>Jain kirana store</Text>
-            <Text style={styles.fevoritItemDistance}>1.5 km</Text>
-            <AntDesign style={styles.fevoritItemRating} name="star" />
-          </View>
-        </View>
+        ) : (
+          <ScrollView
+            contentContainerStyle={{
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+            }}
+            showsHorizontalScrollIndicator={false}>
+            {previousVendors?.map((item, index) => {
+              if (index < 6)
+                return (
+                  <PreviousVendorListItem
+                    key={item.vendorGuid}
+                    item={item}
+                    index={index}
+                    navigation={navigation}
+                  />
+                );
+            })}
+          </ScrollView>
+        )}
       </View>
     </View>
   );

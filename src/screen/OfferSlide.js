@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -23,21 +23,21 @@ const data = [
   {
     id: 1,
     offer: '30 % Discount',
-    img: require('./../assets/slide1.png'),
+    bannerImageurl: require('./../assets/slide1.png'),
     vendorId: '12313',
     offerID: '32423',
   },
   {
     id: 1,
     offer: '30 % Discount',
-    img: require('./../assets/slide1.png'),
+    bannerImageurl: require('./../assets/slide1.png'),
     vendorId: '12313',
     offerID: '32423',
   },
   {
     id: 1,
     offer: '39 % Discount',
-    img: require('./../assets/slide1.png'),
+    bannerImageurl: require('./../assets/slide1.png'),
     vendorId: '12313',
     offerID: '32423',
   },
@@ -47,27 +47,24 @@ import Swiper from 'react-native-swiper';
 
 const imageW = width;
 const imageH = imageW * 1.54;
+import {AuthContext} from '../context/AuthProvider';
+import {getVendorBanner} from '../data/data';
 
 const OfferSlide = () => {
+  const {setLocation, location} = useContext(AuthContext);
+  const [banner, setBanner] = useState([]);
+  useEffect(() => {
+    if (location !== null) fetchData();
+  }, [location]);
+
+  const fetchData = async () => {
+    const res = await getVendorBanner({lat: 23.2164638, lng: 77.389849}, 1);
+    setBanner(res);
+    // console.log(res);
+  };
+
   return (
     <View style={styles.slideContainer}>
-      {/* <FlatList
-        data={data}
-        keyExtractor={(_, index) => index.toString()}
-        horizontal
-        pagingEnabled
-        renderItem={({item}) => {
-          return (
-            <View style={{width, alignItems: 'center'}}>
-              <ImageBackground
-                style={styles.backgroundImg}
-                imageStyle={{borderRadius: 0}}
-                source={require('./../assets/slide1.png')}></ImageBackground>
-            </View>
-          );
-        }}
-      /> */}
-
       <Swiper
         showsButtons
         autoplay
@@ -85,15 +82,27 @@ const OfferSlide = () => {
             }}
           />
         }>
-        {data?.map((item, index) => {
-          return (
-            <ImageBackground
-              key={index.toString()}
-              style={styles.backgroundImg}
-              imageStyle={{borderRadius: 0}}
-              source={item.img}></ImageBackground>
-          );
-        })}
+        {/* display this if the banner from api has data */}
+        {banner?.length > 0
+          ? banner?.map((item, index) => {
+              return (
+                <ImageBackground
+                  key={index.toString()}
+                  style={styles.backgroundImg}
+                  imageStyle={{borderRadius: 0}}
+                  source={{uri: item.bannerImageurl}}></ImageBackground>
+              );
+            })
+          : // display thi sif banner is empy
+            data?.map((item, index) => {
+              return (
+                <ImageBackground
+                  key={index.toString()}
+                  style={styles.backgroundImg}
+                  imageStyle={{borderRadius: 0}}
+                  source={item.bannerImageurl}></ImageBackground>
+              );
+            })}
       </Swiper>
     </View>
   );

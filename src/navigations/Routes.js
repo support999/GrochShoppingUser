@@ -18,12 +18,12 @@ const Routes = () => {
 
   function onAuthStateChanged(user) {
     // console.log(user);
-    setUser(user);
+    // setUser(user);
     if (user) {
       user.getIdToken().then(function (idToken) {
         // <------ Check this line
         // console.log(idToken);
-        setAuth(true);
+        // setAuth(true);
       });
     }
   }

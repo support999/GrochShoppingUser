@@ -24,15 +24,24 @@ const ProductListItem = props => {
 
   const navigation = useNavigation();
 
-  const {item, showBasket} = props;
+  const {item, showBasket, vendorId} = props;
 
   const {
     ProductName,
+    productName,
+
     ProductPrice,
+    productPrice,
+
     ProductImage,
+    productImage,
+
     ProductWeight,
+    productWeight,
+
     productQuantity,
     ProductId,
+    productId,
   } = item;
 
   const addItemToBag = async () => {
@@ -42,9 +51,9 @@ const ProductListItem = props => {
     if (index >= 0) {
       console.log('Item exist');
     } else {
-      const localBasket = await addToBag(item, basket);
+      const localBasket = await addToBag(item, basket, 12, vendorId);
       setBasket(localBasket);
-      // addToBasket(localBasket);
+      console.log(localBasket);
     }
   };
 
@@ -54,18 +63,27 @@ const ProductListItem = props => {
         if (showBasket) return;
 
         navigation.navigate('VendorList', {
-          productId: ProductId,
-          productName: ProductName,
+          productId: ProductId || productId,
+          productName: ProductName || productName,
         });
       }}
       style={styles.previousYouItem}>
-      <Image style={styles.previousItemLogo} source={{uri: ProductImage}} />
+      <Image
+        style={styles.previousItemLogo}
+        source={{uri: ProductImage || productImage}}
+      />
       <View style={styles.previousItemInfo}>
-        <Text style={styles.previousItemName}>{ProductName}</Text>
-        <Text style={styles.previousItemPriceQtt}>{ProductWeight}</Text>
+        <Text style={styles.previousItemName}>
+          {ProductName || productName}
+        </Text>
+        <Text style={styles.previousItemPriceQtt}>
+          {ProductWeight || productWeight}
+        </Text>
 
         <View style={styles.previousItemRSandBuy}>
-          <Text style={styles.previousItemRS}>RS {ProductPrice}</Text>
+          <Text style={styles.previousItemRS}>
+            RS {ProductPrice || productPrice}
+          </Text>
           {showBasket && (
             <TouchableOpacity
               onPress={() => {

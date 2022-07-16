@@ -1,6 +1,6 @@
 import Geolocation from 'react-native-geolocation-service';
 import {Permission, PermissionsAndroid, Alert, Platform} from 'react-native';
-export const baseUrl = 'http://164.52.219.97/Grochouse_V2/api';
+export const baseUrl = 'http://164.52.219.97/Grochouse_V3/api';
 import Geocoder from 'react-native-geocoder';
 
 const hasPermissionIOS = async () => {

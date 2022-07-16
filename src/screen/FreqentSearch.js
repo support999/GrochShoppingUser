@@ -171,7 +171,7 @@ const FreqentSearch = ({navigation}) => {
 
       <SearchBar onChange={onChange} doSomething={performSearch} />
 
-      <ScrollView>
+      <View>
         {!loading && (
           <View>
             <View style={styles.category}>
@@ -298,7 +298,7 @@ const FreqentSearch = ({navigation}) => {
             )}
           </View>
         )}
-      </ScrollView>
+      </View>
       {/* {result.length === 0 && filter !== null && (
         <Text style={styles.categorySectionHeaderCategory}>
           No result found for {filter}
