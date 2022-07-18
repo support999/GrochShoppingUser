@@ -46,7 +46,6 @@ const StoreDetails = ({navigation, route}) => {
     const res = await searchVendorProduct(productName, VendorId);
     setProducts(res);
     setLoading(false);
-    // console.log(res);
   };
 
   useEffect(() => {
@@ -195,15 +194,17 @@ const StoreDetails = ({navigation, route}) => {
           ) : (
             <ScrollView style={styles.previousYouGrid}>
               {products?.map((item, index) => {
-                return (
-                  <ProductListitem
-                    key={index.toString()}
-                    item={item.Product}
-                    index={index}
-                    showBasket
-                    vendorId={VendorId}
-                  />
-                );
+                if (index < 50) {
+                  return (
+                    <ProductListitem
+                      key={index.toString()}
+                      item={item}
+                      index={index}
+                      showBasket
+                      vendorId={VendorId}
+                    />
+                  );
+                }
               })}
             </ScrollView>
           )}

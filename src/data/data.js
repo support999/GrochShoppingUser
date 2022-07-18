@@ -63,10 +63,10 @@ export const searchProductByName = async name => {
 export const searchVendorProduct = async (productName, vendorId) => {
   try {
     const res = await axios.get(
-      `search/productByVendorId?name=${productName}&VendorId=${vendorId}`,
+      `/Product/VenderProducts?productName=${productName}&vendorId=${184137}&latitude=23.2164638&longitude=77.389849&service=Grocery&userId=12&radius=15.00`,
     );
-    console.log(res?.data);
-    return res?.data[0]?.VendorProducts;
+    // console.log(res?.data.result[0]);
+    return res?.data?.result;
   } catch (error) {
     console.log('Store error', error);
     return [];
