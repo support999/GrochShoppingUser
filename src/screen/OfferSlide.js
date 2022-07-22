@@ -90,7 +90,8 @@ const OfferSlide = () => {
                   key={index.toString()}
                   style={styles.backgroundImg}
                   imageStyle={{borderRadius: 0}}
-                  source={{uri: item.bannerImageurl}}></ImageBackground>
+                  source={{uri: item.BannerImageurl}}
+                />
               );
             })
           : // display thi sif banner is empy
@@ -100,7 +101,8 @@ const OfferSlide = () => {
                   key={index.toString()}
                   style={styles.backgroundImg}
                   imageStyle={{borderRadius: 0}}
-                  source={item.bannerImageurl}></ImageBackground>
+                  source={item.bannerImageurl}
+                />
               );
             })}
       </Swiper>

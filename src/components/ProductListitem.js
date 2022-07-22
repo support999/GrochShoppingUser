@@ -45,15 +45,17 @@ const ProductListItem = props => {
   } = item;
 
   const addItemToBag = async () => {
+    const pID = ProductId || productId;
     const index = basket?.findIndex(
-      basketItem => basketItem.productId === ProductId,
+      basketItem => basketItem.vendorProductId === pID,
     );
+
     if (index >= 0) {
       console.log('Item exist');
     } else {
       const localBasket = await addToBag(item, basket, 12, vendorId);
       setBasket(localBasket);
-      console.log(localBasket);
+      // console.log(localBasket[0]);
     }
   };
 

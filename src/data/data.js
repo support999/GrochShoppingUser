@@ -60,10 +60,38 @@ export const searchProductByName = async name => {
 };
 
 // return list of product for a single vendor
+export const fetchVendorProduct = async (productName, vendorId) => {
+  try {
+    const res = await axios.get(
+      `/Product/VenderProducts?vendorId=${184137}&latitude=23.2164638&longitude=77.389849&service=Grocery&userId=12&radius=15.00`,
+    );
+    // console.log(res?.data.result[0]);
+    return res?.data?.result;
+  } catch (error) {
+    console.log('Store error', error);
+    return [];
+  }
+};
+
+// search product of single vendor
 export const searchVendorProduct = async (productName, vendorId) => {
   try {
     const res = await axios.get(
-      `/Product/VenderProducts?productName=${productName}&vendorId=${184137}&latitude=23.2164638&longitude=77.389849&service=Grocery&userId=12&radius=15.00`,
+      `/Product/VenderProductByNameAndVendorId?name=${productName}&vendorid=${184137}`,
+    );
+    // console.log(res?.data.result[0]);
+    return res?.data?.result;
+  } catch (error) {
+    console.log('Store error', error);
+    return [];
+  }
+};
+
+// return list of procuct from a vendor based on category
+export const vendorProductByCategory = async (categoryId, vendorId) => {
+  try {
+    const res = await axios.get(
+      `/Category/VenderProductByCategoryndVendorId?_categoryid=${categoryId}&vendorid=184137`,
     );
     // console.log(res?.data.result[0]);
     return res?.data?.result;
@@ -259,7 +287,7 @@ export const getVendorBanner = async (location, userId) => {
     const res = await axios.get(
       `/Vendor/VendorBanner?latitude=${location.lat}&longitude=${location.lng}&radius=10&userId=${userId}`,
     );
-    return res.data.result;
+    return res.data;
   } catch (error) {
     console.log(error);
     return [];

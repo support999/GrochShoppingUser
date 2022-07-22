@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useContext, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -21,10 +21,21 @@ import SearchBar from './SearchBar';
 import OfferSlide from './OfferSlide';
 
 import {ScrollView, StatusBar, useColorScheme} from 'react-native';
-import {ActivityIndicator, ProductListitem} from '../components';
-import {searchVendorProduct} from '../data/data';
+import {
+  ActivityIndicator,
+  CategoriesListitem,
+  ProductListitem,
+} from '../components';
+import {
+  fetchVendorProduct,
+  searchVendorProduct,
+  vendorProductByCategory,
+} from '../data/data';
+import {AuthContext} from '../context/AuthProvider';
 
 const StoreDetails = ({navigation, route}) => {
+  const {categories, setCategories} = useContext(AuthContext);
+
   const {item, productName, type} = route.params;
   const {
     shopName,
@@ -43,7 +54,21 @@ const StoreDetails = ({navigation, route}) => {
 
   const fetchData = async (productName, VendorId) => {
     setLoading(true);
+    const res = await fetchVendorProduct(productName, VendorId);
+    setProducts(res);
+    setLoading(false);
+  };
+
+  const searchProduct = async (productName, VendorId) => {
+    setLoading(true);
     const res = await searchVendorProduct(productName, VendorId);
+    setProducts(res);
+    setLoading(false);
+  };
+
+  const getProductByCategory = async (categoryId, VendorId) => {
+    setLoading(true);
+    const res = await vendorProductByCategory(categoryId, VendorId);
     setProducts(res);
     setLoading(false);
   };
@@ -54,7 +79,7 @@ const StoreDetails = ({navigation, route}) => {
   }, []);
 
   const performSearch = () => {
-    fetchData(filter, VendorId);
+    searchProduct(filter, VendorId);
   };
 
   const onChange = val => {
@@ -104,50 +129,28 @@ const StoreDetails = ({navigation, route}) => {
             </TouchableOpacity>
           </View>
 
-          <View style={styles.categorySectionGrid}>
-            <TouchableOpacity
-              style={styles.categorySectionItem}
-              onPress={() => navigation.navigate('SearchProduct')}>
-              <View style={[styles.categoryItemLogoBG, styles.bgColor1]}>
-                <Image
-                  style={styles.categoryItemLogo}
-                  source={require('./../assets/Veg.png')}></Image>
-              </View>
-              <Text style={styles.categoryItemName}>Vegetables</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.categorySectionItem}
-              onPress={() => navigation.navigate('SearchProduct')}>
-              <View style={[styles.categoryItemLogoBG, styles.bgColor]}>
-                <Image
-                  style={styles.categoryItemLogo}
-                  source={require('./../assets/Vector(1).png')}></Image>
-              </View>
-              <Text style={styles.categoryItemName}>Fruits</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.categorySectionItem}
-              onPress={() => navigation.navigate('SearchProduct')}>
-              <View style={[styles.categoryItemLogoBG, styles.bgColor2]}>
-                <Image
-                  style={styles.categoryItemLogo}
-                  source={require('./../assets/Vector(2).png')}></Image>
-              </View>
-              <Text style={styles.categoryItemName}>Milk & Eggs</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.categorySectionItem}
-              onPress={() => navigation.navigate('SearchProduct')}>
-              <View style={[styles.categoryItemLogoBG, styles.bgColor2]}>
-                <Image
-                  style={styles.categoryItemLogo}
-                  source={require('./../assets/Vector-Copy.png')}></Image>
-              </View>
-              <Text style={styles.categoryItemName}>Meat</Text>
-            </TouchableOpacity>
+          <View style={{}}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {categories?.map((item, index) => {
+                return (
+                  <TouchableOpacity
+                    key={index.toString()}
+                    style={styles.categorySectionItem}
+                    onPress={() => {
+                      getProductByCategory(item.productCategoryId, VendorId);
+                    }}>
+                    <View style={[styles.categoryItemLogoBG, styles.bgColor2]}>
+                      <Image
+                        style={styles.categoryItemLogo}
+                        source={{uri: item.imageUrl}}></Image>
+                    </View>
+                    <Text style={styles.categoryItemName}>
+                      {item.productCategory}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
           </View>
         </View>
 
@@ -303,9 +306,6 @@ const styles = StyleSheet.create({
     // marginTop: 30
   },
   categorySectionItem: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
     marginBottom: 20,
     width: Dimensions.get('window').width / 5,
   },
@@ -329,7 +329,8 @@ const styles = StyleSheet.create({
   },
   categoryItemLogo: {
     borderRadius: 25,
-    width: 20,
+    width: '100%',
+    height: '100%',
   },
   categoryItemName: {
     color: '#22292E',

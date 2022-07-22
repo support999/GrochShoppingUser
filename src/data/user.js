@@ -52,7 +52,7 @@ const getAuthToken = async () => {
     // if we have token on device
     if (jsonValue !== null) {
       let authTokens = JSON.parse(jsonValue);
-      console.log('got from local storage');
+      // console.log('got from local storage');
       return authTokens;
     } else {
       console.log('got from local server');
@@ -76,8 +76,9 @@ const getAuthToken = async () => {
   }
 };
 
-const setHeaders = async token => {
+export const setHeaders = async token => {
   axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+  // console.log('header set');
 };
 
 export const initBaseurl = async url => {
@@ -98,11 +99,11 @@ export const loadToken = async () => {
       loadToken();
     } else {
       await setHeaders(idToken);
-      if (axios.defaults.headers.common.Authorization !== undefined) {
-        console.log('Header set');
-      } else {
-        console.log('Header is mising');
-      }
+      // if (axios.defaults.headers.common.Authorization !== undefined) {
+      //   // console.log('Header set');
+      // } else {
+      //   console.log('Header is mising');
+      // }
       // console.log('token header ', axios.defaults.headers.common.Authorization);
     }
   } catch (error) {
@@ -134,5 +135,16 @@ export const getFrequentSearch = async () => {
     // error reading value
     console.log(e);
     return frequentSearch;
+  }
+};
+
+export const addUser = async body => {
+  try {
+    const res = await axios.post('/User/AddUser', body);
+    console.log('respons', res.data);
+    return res.data;
+  } catch (error) {
+    console.log(' order error ', error);
+    return null;
   }
 };

@@ -28,11 +28,12 @@ const Action = ({navigation, totalPrice, basket}) => {
     try {
       const res = await orderProduct(basket, 12);
       if (res) {
+        setBasket([]);
         setReloadOrder(true);
         Alert.alert('Purchase Successful');
         removeFromAsyncStorage('bag');
         navigation.navigate('OrderTab');
-        setBasket([]);
+
         actionSheetRef.current?.setModalVisible(false);
       } else Alert.alert('unable to complete your purchase');
     } catch (error) {
@@ -129,6 +130,9 @@ const Bag = ({navigation}) => {
     setPayableAmount,
     refreshFlatlist,
     setRefreshFlatList,
+    auth,
+    user,
+    setAuth,
   } = useContext(AuthContext);
 
   return (
@@ -158,7 +162,11 @@ const Bag = ({navigation}) => {
         <TouchableOpacity
           style={[stylesBtn.checkoutBtn]}
           onPress={() => {
-            actionSheetRef.current?.setModalVisible(true);
+            if (user) actionSheetRef.current?.setModalVisible(true);
+            else {
+              Alert.alert('You will have to login to complete your order');
+              setAuth(false);
+            }
           }}>
           <Text style={[stylesBtn.checkoutText]}>Go to Checkout</Text>
           <View style={[stylesBtn.priceBG]}>

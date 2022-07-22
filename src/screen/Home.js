@@ -98,6 +98,7 @@ const Home = ({navigation}) => {
 
   const getOrderHistory = async () => {
     const orederRes = await fetchHistory(12);
+
     setOrders(orederRes);
     setReloadOrder(false);
   };

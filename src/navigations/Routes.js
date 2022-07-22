@@ -4,7 +4,7 @@ import MainNavigation from './MainNavigation';
 import {View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {AuthContext} from '../context/AuthProvider';
-import {initBaseurl, loadToken} from '../data/user';
+import {addUser, initBaseurl, loadToken, setHeaders} from '../data/user';
 import {ActivityIndicator} from '../components';
 import auth from '@react-native-firebase/auth';
 import axios from 'axios';
@@ -17,16 +17,51 @@ const Routes = () => {
     useContext(AuthContext);
 
   function onAuthStateChanged(user) {
-    // console.log(user);
-    // setUser(user);
     if (user) {
       user.getIdToken().then(function (idToken) {
-        // <------ Check this line
-        // console.log(idToken);
-        // setAuth(true);
+        setHeaders(idToken);
       });
+
+      // store user details
+      saveUser(user.phoneNumber);
     }
+
+    setIsLoading(false);
   }
+  // console.log(new Date().toISOString());
+  const saveUser = async phoneNumber => {
+    console.log(phoneNumber);
+    const body = {
+      user: {
+        userId: 0,
+        mobileNumber: phoneNumber,
+        emailId: 'Nil',
+        password: 'Nil',
+        isCustomer: 0,
+        isVendor: 0,
+        isDeliveryDriver: 0,
+        isVerified: 0,
+        createdDate: new Date().toISOString(),
+        modifiedDate: new Date().toISOString(),
+        createdBy: 'string',
+        modifiedBy: 'string',
+        token: 0,
+        tokentime: 'string',
+        isActive: true,
+        firebaseId: 'string',
+        userGuid: 'string',
+      },
+      _lat: {
+        latitude: '23.2546',
+        longitude: '77.2356',
+      },
+    };
+
+    const res = await addUser(body);
+    console.log(res);
+
+    setAuth(true);
+  };
 
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
@@ -39,7 +74,7 @@ const Routes = () => {
   };
 
   useEffect(() => {
-    initToken();
+    // initToken();
   }, []);
 
   if (isLoading) {
