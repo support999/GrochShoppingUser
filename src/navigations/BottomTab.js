@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import {StyleSheet, useColorScheme, View} from 'react-native';
+import {StyleSheet, useColorScheme, View, Image} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -15,11 +15,9 @@ import OrderStackNavigation from './OrderStackNavigation';
 import BagStackNavigation from './BagStackNavigation';
 import NotificationStackScreen from './NotificationStackNavigation';
 import {AuthContext} from '../context/AuthProvider';
-
 const BottomTab = ({navigation}) => {
   const isDarkMode = useColorScheme() === 'dark';
   const {badge} = useContext(AuthContext);
-
   // <NavigationContainer>
   //   <Stack.Navigator
   //     screenOptions={{ header: () => null }}>
@@ -92,6 +90,28 @@ const BottomTab = ({navigation}) => {
           ),
         }}
       />
+
+      {/* <Tab.Screen
+        name="Delivery"
+        component={OrderStackNavigation}
+        options={{
+          tabBarLabel: '',
+          tabBarIcon: ({focused, color, size}) => (
+            <View
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: '#F20505',
+                height: 80,
+                width: 80,
+                borderRadius: 40,
+                marginBottom: 26,
+              }}>
+              <Image source={require('./../assets/Scooter.png')} />
+            </View>
+          ),
+        }}
+      /> */}
 
       <Tab.Screen
         name="BagTab"

@@ -2,7 +2,7 @@ import {Text, TouchableOpacity, StyleSheet, View} from 'react-native';
 import React, {useContext} from 'react';
 import {AuthContext} from '../context/AuthProvider';
 import moment from 'moment';
-const DeliveredOrders = () => {
+const ProcessingOrder = () => {
   const {orders} = useContext(AuthContext);
 
   const OrderListItem = pItem => {
@@ -22,16 +22,16 @@ const DeliveredOrders = () => {
                 stylesBtn.darkFont,
                 {width: '33%'},
               ]}>
-              Ali Super Store1123123423423
+              Ali Super Store
             </Text>
             <Text
               style={[
                 stylesBtn.itemRow1,
                 stylesBtn.smallfont,
-                stylesBtn.green,
+                stylesBtn.orange,
                 {marginLeft: '-16%'},
               ]}>
-              New Order
+              Processing
             </Text>
             <Text style={[stylesBtn.itemRow1, stylesBtn.height, stylesBtn.red]}>
               Cancel
@@ -111,14 +111,14 @@ const DeliveredOrders = () => {
               <Text style={[stylesBtn.higlght, stylesBtn.white]}>Details</Text>
             </View>
 
-            <View style={stylesBtn.btn2}>
+            <View style={[stylesBtn.btn2, stylesBtn.blueBG]}>
               <Text
                 style={[
                   stylesBtn.itemRow1,
                   stylesBtn.smallfont,
-                  stylesBtn.yello,
+                  stylesBtn.white,
                 ]}>
-                Reorder
+                Return
               </Text>
             </View>
 
@@ -149,7 +149,7 @@ const DeliveredOrders = () => {
   );
 };
 
-export default DeliveredOrders;
+export default ProcessingOrder;
 
 const stylesBtn = StyleSheet.create({
   list: {},
@@ -206,8 +206,8 @@ const stylesBtn = StyleSheet.create({
     // flex: 1,
     height: 30,
     width: 98,
-    borderWidth: 1,
-    borderColor: '#F20505',
+    // borderWidth: 1,
+    // borderColor: '#F20505',
     borderRadius: 25,
     justifyContent: 'center',
     textAlign: 'center',
@@ -251,7 +251,13 @@ const stylesBtn = StyleSheet.create({
   green: {
     color: '#2AA952',
   },
+  orange: {
+    color: '#D68F1B',
+  },
   margin: {
     marginLeft: 5,
+  },
+  blueBG: {
+    backgroundColor: '#3D6DEB',
   },
 });

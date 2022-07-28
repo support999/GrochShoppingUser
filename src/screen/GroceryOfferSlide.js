@@ -50,7 +50,7 @@ const imageH = imageW * 1.54;
 import {AuthContext} from '../context/AuthProvider';
 import {getVendorBanner} from '../data/data';
 
-const OfferSlide = () => {
+const GroceryOfferSlide = () => {
   const {setLocation, location} = useContext(AuthContext);
   const [banner, setBanner] = useState([]);
   useEffect(() => {
@@ -66,12 +66,11 @@ const OfferSlide = () => {
   return (
     <View style={styles.slideContainer}>
       <Swiper
-        // showsButtons
         autoplay
         dot={
           <View
             style={{
-              backgroundColor: '#ffff',
+              backgroundColor: 'gray',
               width: 8,
               height: 8,
               borderRadius: 4,
@@ -104,7 +103,8 @@ const OfferSlide = () => {
                   key={index.toString()}
                   style={styles.backgroundImg}
                   imageStyle={{borderRadius: 0}}
-                  source={{uri: item.bannerImageurl}}></ImageBackground>
+                  //   source={{ uri: item.bannerImageurl }}
+                  source={require('./../assets/banner.png')}></ImageBackground>
               );
             })
           : // display thi sif banner is empy
@@ -114,7 +114,9 @@ const OfferSlide = () => {
                   key={index.toString()}
                   style={styles.backgroundImg}
                   imageStyle={{borderRadius: 0}}
-                  source={item.bannerImageurl}></ImageBackground>
+                  source={require('./../assets/banner.png')}
+                  //   source={item.bannerImageurl}
+                ></ImageBackground>
               );
             })}
       </Swiper>
@@ -125,11 +127,14 @@ const OfferSlide = () => {
 const styles = StyleSheet.create({
   slideContainer: {
     height: 120,
+    width: '96%',
+    marginLeft: '2%',
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 10,
     backgroundColor: 'white',
     shadowColor: '#000',
+    borderRadius: 10,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -139,12 +144,13 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   backgroundImg: {
-    height: 110,
+    height: 120,
+    marginTop: -1,
     borderRadius: 5,
     width: imageW,
     paddingLeft: 0,
     marginLeft: 0,
-    marginTop: 5,
+    padding: 0,
   },
   overTextOfferBox: {
     width: 160,
@@ -171,4 +177,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default OfferSlide;
+export default GroceryOfferSlide;

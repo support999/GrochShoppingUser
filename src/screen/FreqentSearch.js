@@ -199,7 +199,7 @@ const FreqentSearch = ({navigation}) => {
               </View>
             </View>
 
-            <View style={styles.category}>
+            {/* <View style={styles.category}>
               <View style={styles.categorySectionHeader}>
                 <Text style={styles.categorySectionHeaderCategory}>
                   Popular Suggestions
@@ -219,7 +219,7 @@ const FreqentSearch = ({navigation}) => {
                   </View>
                 </TouchableOpacity>
               </View>
-            </View>
+            </View> */}
           </View>
         )}
 
@@ -228,8 +228,8 @@ const FreqentSearch = ({navigation}) => {
             <View style={styles.previousYouHeader}>
               <Text style={styles.previousYouHeaderFevorit}>
                 {!isFirstTime && searchType === 'vendor'
-                  ? 'Results (' + result.length + ')'
-                  : 'Results (' + resultProduct.length + ')'}
+                  ? 'Product Results (' + result.length + ')'
+                  : 'Product Results (' + resultProduct.length + ')'}
               </Text>
             </View>
           </View>

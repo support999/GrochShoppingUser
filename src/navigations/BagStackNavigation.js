@@ -1,6 +1,6 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {Bag, CheckOut, Payment, Success, NumberOtp} from '../screen';
+import {Bag, CheckOut, Payment, Success} from '../screen';
 
 const BagStack = createNativeStackNavigator();
 function BagStackNavigation() {
@@ -18,13 +18,6 @@ function BagStackNavigation() {
         Options={{header: () => true}}
       />
       <BagStack.Screen name="Success" component={Success} />
-      <BagStack.Screen
-        options={{
-          headerShown: false,
-        }}
-        name="NumberOtp"
-        component={NumberOtp}
-      />
     </BagStack.Navigator>
   );
 }

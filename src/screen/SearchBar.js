@@ -14,11 +14,24 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
 
 const SearchBar = props => {
-  const {onChange, showText, doSomething} = props;
+  const {onChange, showText, doSomething, showText2} = props;
 
   return (
     // <View style={styles.searchContainer}>
+
     <View style={styles.searchInput}>
+      <TouchableOpacity
+        onPress={() => {
+          doSomething && doSomething();
+        }}>
+        <Ionicons
+          style={styles.miceIcon}
+          name="search"
+          size={24}
+          color="black"
+        />
+      </TouchableOpacity>
+
       {showText ? (
         <TouchableOpacity
           onPress={() => {
@@ -27,9 +40,23 @@ const SearchBar = props => {
           <Text
             style={[
               styles.input,
-              {marginBottom: 0, marginTop: 4, opacity: 0.3},
+              {
+                marginTop: -10,
+                marginBottom: -10,
+                // marginTop: 4,
+                opacity: 0.3,
+                // backgroundColor: 'gray',
+                height: 45,
+                width: '100%',
+                paddingLeft: 10,
+                marginLeft: -50,
+                paddingLeft: 60,
+                width: 380,
+                paddingTop: 10,
+                borderRadius: 7,
+              },
             ]}>
-            Search vendor , or product
+            Search product
           </Text>
         </TouchableOpacity>
       ) : (
@@ -39,18 +66,9 @@ const SearchBar = props => {
           }}
           style={styles.input}
           onChangeText={val => onChange(val)}
-          placeholder="Search vendor , or product"
+          placeholder={showText2 ? 'Search vendor' : 'Search product'}
         />
       )}
-      <Ionicons
-        onPress={() => {
-          doSomething && doSomething();
-        }}
-        style={styles.miceIcon}
-        name="search"
-        size={24}
-        color="black"
-      />
     </View>
     //   </View>fff
   );
@@ -59,15 +77,14 @@ const SearchBar = props => {
 const styles = StyleSheet.create({
   searchInput: {
     // flex: 1,
-    height: 50,
+    height: 45,
     flexDirection: 'row',
     marginLeft: 20,
     marginRight: 20,
-    marginTop: 20,
-    borderWidth: 1,
-    borderRadius: 5,
-    borderColor: '#000000',
+    // marginTop: 20,
+    borderRadius: 15,
     padding: 10,
+    backgroundColor: '#F9F9F9',
   },
   input: {
     width: '100%',
@@ -80,9 +97,9 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   miceIcon: {
-    flex: 1,
-    textAlign: 'right',
-    color: '#EB3223',
+    textAlign: 'left',
+    color: '#9B9B9B',
+    marginLeft: 10,
   },
 });
 

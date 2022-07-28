@@ -1,4 +1,5 @@
-import React, {useEffect, useContext, useState} from 'react';
+import React, {useEffect, useState, createRef} from 'react';
+import ActionSheet from 'react-native-actions-sheet';
 import {
   StyleSheet,
   Text,
@@ -21,26 +22,17 @@ import SearchBar from './SearchBar';
 import OfferSlide from './OfferSlide';
 
 import {ScrollView, StatusBar, useColorScheme} from 'react-native';
-import {
-  ActivityIndicator,
-  CategoriesListitem,
-  ProductListitem,
-} from '../components';
-import {
-  fetchVendorProduct,
-  searchVendorProduct,
-  vendorProductByCategory,
-} from '../data/data';
-import {AuthContext} from '../context/AuthProvider';
+import {ActivityIndicator, ProductListitem} from '../components';
+import {searchVendorProduct} from '../data/data';
+import StoreBannerSlide from './StoreBannerSlide';
 
 const StoreDetails = ({navigation, route}) => {
-  const {categories, setCategories} = useContext(AuthContext);
-
+  // const actionSheetRef = createRef();
   const {item, productName, type} = route.params;
   const {
     shopName,
     ShopName,
-    vendorAddress,
+    VendorAddress,
     vendorProducts,
     vendorOpeningTime,
     vendorClosingTime,
@@ -51,40 +43,223 @@ const StoreDetails = ({navigation, route}) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState(null);
+  const [checked, setChecked] = React.useState('first');
 
   const fetchData = async (productName, VendorId) => {
     setLoading(true);
-    const res = await fetchVendorProduct(productName, VendorId);
-    setProducts(res);
-    setLoading(false);
-  };
-
-  const searchProduct = async (productName, VendorId) => {
-    setLoading(true);
     const res = await searchVendorProduct(productName, VendorId);
     setProducts(res);
-    setLoading(false);
-  };
-
-  const getProductByCategory = async (categoryId, VendorId) => {
-    setLoading(true);
-    const res = await vendorProductByCategory(categoryId, VendorId);
-    setProducts(res);
+    console.log(item);
     setLoading(false);
   };
 
   useEffect(() => {
     fetchData(productName, VendorId);
     // vendorProductImage();
+    // actionSheet2Ref.current?.setModalVisible(true);
   }, []);
 
   const performSearch = () => {
-    searchProduct(filter, VendorId);
+    fetchData(filter, VendorId);
   };
 
   const onChange = val => {
     setFilter(val);
     // console.log(val
+  };
+  const actionSheetRef = createRef();
+  const actionSheet2Ref = createRef();
+
+  const Action = ({navigation, item}) => (
+    <ActionSheet ref={actionSheetRef}>
+      <View style={{}}>
+        <View style={[sheetStyle.sheetHead]}>
+          <Text style={sheetStyle.headName}>Filter</Text>
+        </View>
+
+        <ScrollView
+          style={{
+            flexDirection: 'column',
+            // display: 'flex',
+            // flex: 1,
+            marginLeft: 20,
+          }}>
+          <View style={[sheetStyle.subHead]}>
+            <Text style={sheetStyle.subHeadName}>Categories</Text>
+          </View>
+          <View style={{flexDirection: 'row', marginTop: 15}}>
+            <View
+              style={[
+                sheetStyle.readio,
+                {backgroundColor: '#F20505', borderColor: '#F20505'},
+              ]}></View>
+            <Text style={[sheetStyle.readioText, {color: '#F20505'}]}>
+              Beauty & Hygiene
+            </Text>
+          </View>
+          <View style={{flexDirection: 'row', marginTop: 15}}>
+            <View style={[sheetStyle.readio]}></View>
+            <Text style={[sheetStyle.readioText]}>Cleaning</Text>
+          </View>
+          <View style={{flexDirection: 'row', marginTop: 15}}>
+            <View style={[sheetStyle.readio]}></View>
+            <Text style={[sheetStyle.readioText]}>Beverages</Text>
+          </View>
+          <View style={{flexDirection: 'row', marginTop: 15}}>
+            <View style={[sheetStyle.readio]}></View>
+            <Text style={[sheetStyle.readioText]}>Food and Vegetables</Text>
+          </View>
+          <View style={[sheetStyle.subHead, {marginTop: 20}]}>
+            <Text style={[sheetStyle.subHeadName]}>Brand</Text>
+          </View>
+          <View style={{flexDirection: 'row', marginTop: 15}}>
+            <View
+              style={[
+                sheetStyle.readio,
+                {backgroundColor: '#F20505', borderColor: '#F20505'},
+              ]}></View>
+            <Text style={[sheetStyle.readioText, {color: '#F20505'}]}>
+              Ammul
+            </Text>
+          </View>
+          <View style={{flexDirection: 'row', marginTop: 15}}>
+            <View style={[sheetStyle.readio]}></View>
+            <Text style={[sheetStyle.readioText]}>Cocola</Text>
+          </View>
+          <View style={{flexDirection: 'row', marginTop: 15}}>
+            <View style={[sheetStyle.readio]}></View>
+            <Text style={[sheetStyle.readioText]}>Ifad</Text>
+          </View>
+          <View style={{flexDirection: 'row', marginTop: 15}}>
+            <View style={[sheetStyle.readio]}></View>
+            <Text style={[sheetStyle.readioText]}>Kazi Farmas</Text>
+          </View>
+          <View style={{flexDirection: 'row', marginTop: 15}}>
+            <View style={[sheetStyle.readio]}></View>
+            <Text style={[sheetStyle.readioText]}>Product On Offers</Text>
+          </View>
+          <TouchableOpacity
+            style={[sheetStyle.checkoutBtn, {marginTop: 20}]}
+            onPress={() => actionSheetRef.current?.setModalVisible(false)}>
+            <Text style={[sheetStyle.checkoutText]}>Apply Filter</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </View>
+    </ActionSheet>
+  );
+  const Action2 = ({navigation, item}) => (
+    <ActionSheet ref={actionSheet2Ref}>
+      <View style={{}}>
+        <View style={[sheetStyle.sheetHead]}>
+          <Text style={sheetStyle.headName}>Sorting</Text>
+        </View>
+
+        <ScrollView
+          style={{
+            // flexDirection: 'column',
+            marginLeft: 20,
+          }}>
+          <View style={{flexDirection: 'row', marginTop: 15}}>
+            <View
+              style={[
+                sheetStyle.readio,
+                {backgroundColor: '#F20505', borderColor: '#F20505'},
+              ]}></View>
+            <Text style={[sheetStyle.readioText, {color: '#F20505'}]}>
+              Price
+            </Text>
+          </View>
+          <View style={{flexDirection: 'row', marginTop: 15, marginBottom: 20}}>
+            <View style={[sheetStyle.readio]}></View>
+            <Text style={[sheetStyle.readioText]}>Product</Text>
+          </View>
+
+          <TouchableOpacity
+            style={[sheetStyle.checkoutBtn]}
+            onPress={() => actionSheet2Ref.current?.setModalVisible(false)}>
+            <Text style={[sheetStyle.checkoutText]}>Apply Filter</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </View>
+    </ActionSheet>
+  );
+  const Filters = () => {
+    return (
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          marginTop: 5,
+        }}>
+        <TouchableOpacity
+          onPress={() => {
+            actionSheet2Ref.current?.setModalVisible(true);
+          }}
+          style={{
+            height: 26,
+            width: 73,
+            borderRadius: 4,
+            backgroundColor: '#E6E6E6',
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <MaterialIcons name="sort" color="#828282" size={16} />
+          <Text
+            style={{
+              color: '#828282',
+              fontSize: 13,
+              marginLeft: 5,
+              fontWeight: '400',
+            }}>
+            Sort
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            actionSheetRef.current?.setModalVisible(true);
+          }}
+          style={{
+            height: 26,
+            width: 73,
+            borderRadius: 4,
+            backgroundColor: '#FFC2C2',
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginLeft: 12,
+          }}>
+          <AntDesign name="filter" color="#828282" size={16} />
+          <Text
+            style={{
+              color: '#828282',
+              fontSize: 13,
+              marginLeft: 5,
+              fontWeight: '400',
+            }}>
+            Filter
+          </Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+  const Buttons = () => {
+    return (
+      <View
+        style={{
+          width: '15%',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          marginTop: 5,
+        }}>
+        <TouchableOpacity>
+          <AntDesign name="message1" color="red" size={17} />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <MaterialIcons name="perm-phone-msg" color="black" size={17} />
+        </TouchableOpacity>
+      </View>
+    );
   };
 
   return (
@@ -96,14 +271,34 @@ const StoreDetails = ({navigation, route}) => {
           <AntDesign style={styles.backIcon} name="left" color="black" />
         </TouchableOpacity>
         <View style={styles.headerDetails}>
-          <Text
-            style={
-              (styles.storeName,
-              {color: 'black', fontSize: 18, fontWeight: 'bold'})
-            }>
-            {shopName || ShopName}
-          </Text>
-          <Text style={styles.address}>{vendorAddress}</Text>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <View style={{flexDirection: 'column', width: '70%'}}>
+              <Text
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                style={
+                  (styles.storeName,
+                  {
+                    color: 'black',
+                    fontSize: 18,
+                    fontWeight: 'bold',
+                    flexGrow: 1,
+                    flexShrink: 1,
+                    flexBasis: 25,
+                  })
+                }>
+                {shopName || ShopName}
+              </Text>
+              <Text
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                style={styles.address}>
+                {VendorAddress}
+              </Text>
+            </View>
+            <Buttons />
+          </View>
+
           <View style={styles.SubHeader}>
             <View style={styles.StoreRating}>
               <FontAwesome style={styles.ratingIcon} name="star" />
@@ -117,41 +312,112 @@ const StoreDetails = ({navigation, route}) => {
 
       <SearchBar onChange={onChange} doSomething={performSearch} />
 
-      <OfferSlide></OfferSlide>
-
+      <Action navigation={navigation} />
+      <Action2 navigation={navigation} />
       <ScrollView>
+        <StoreBannerSlide />
         <View style={styles.category}>
           <View style={styles.categorySectionHeader}>
             <Text style={styles.categorySectionHeaderCategory}>Categories</Text>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() => navigation.navigate('CategoryModel')}>
               <Text style={styles.categorySectionHeaderBtn}>See All</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
 
-          <View style={{}}>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {categories?.map((item, index) => {
-                return (
-                  <TouchableOpacity
-                    key={index.toString()}
-                    style={styles.categorySectionItem}
-                    onPress={() => {
-                      getProductByCategory(item.productCategoryId, VendorId);
-                    }}>
-                    <View style={[styles.categoryItemLogoBG, styles.bgColor2]}>
-                      <Image
-                        style={styles.categoryItemLogo}
-                        source={{uri: item.imageUrl}}></Image>
-                    </View>
-                    <Text style={styles.categoryItemName}>
-                      {item.productCategory}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </ScrollView>
-          </View>
+          <ScrollView
+            contentContainerStyle={styles.categorySectionGrid}
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            indicatorStyle={false}>
+            <TouchableOpacity
+              style={styles.categorySectionItem}
+              onPress={() => navigation.navigate('SearchProduct')}>
+              <View style={[styles.categoryItemLogoBG, styles.bgColor1]}>
+                <Image
+                  style={styles.categoryItemLogo}
+                  source={require('./../assets/Veg.png')}></Image>
+              </View>
+              <Text style={styles.categoryItemName}>Vegetables</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.categorySectionItem}
+              onPress={() => navigation.navigate('SearchProduct')}>
+              <View style={[styles.categoryItemLogoBG, styles.bgColor]}>
+                <Image
+                  style={styles.categoryItemLogo}
+                  source={require('./../assets/Vector(1).png')}></Image>
+              </View>
+              <Text style={styles.categoryItemName}>Fruits</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.categorySectionItem}
+              onPress={() => navigation.navigate('SearchProduct')}>
+              <View style={[styles.categoryItemLogoBG, styles.bgColor2]}>
+                <Image
+                  style={styles.categoryItemLogo}
+                  source={require('./../assets/Vector(2).png')}></Image>
+              </View>
+              <Text style={styles.categoryItemName}>Milk & Eggs</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.categorySectionItem}
+              onPress={() => navigation.navigate('SearchProduct')}>
+              <View style={[styles.categoryItemLogoBG, styles.bgColor2]}>
+                <Image
+                  style={styles.categoryItemLogo}
+                  source={require('./../assets/Vector-Copy.png')}></Image>
+              </View>
+              <Text style={styles.categoryItemName}>Meat</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.categorySectionItem}
+              onPress={() => navigation.navigate('SearchProduct')}>
+              <View style={[styles.categoryItemLogoBG, styles.bgColor1]}>
+                <Image
+                  style={styles.categoryItemLogo}
+                  source={require('./../assets/Veg.png')}></Image>
+              </View>
+              <Text style={styles.categoryItemName}>Vegetables</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.categorySectionItem}
+              onPress={() => navigation.navigate('SearchProduct')}>
+              <View style={[styles.categoryItemLogoBG, styles.bgColor]}>
+                <Image
+                  style={styles.categoryItemLogo}
+                  source={require('./../assets/Vector(1).png')}></Image>
+              </View>
+              <Text style={styles.categoryItemName}>Fruits</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.categorySectionItem}
+              onPress={() => navigation.navigate('SearchProduct')}>
+              <View style={[styles.categoryItemLogoBG, styles.bgColor2]}>
+                <Image
+                  style={styles.categoryItemLogo}
+                  source={require('./../assets/Vector(2).png')}></Image>
+              </View>
+              <Text style={styles.categoryItemName}>Milk & Eggs</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.categorySectionItem}
+              onPress={() => navigation.navigate('SearchProduct')}>
+              <View style={[styles.categoryItemLogoBG, styles.bgColor2]}>
+                <Image
+                  style={styles.categoryItemLogo}
+                  source={require('./../assets/Vector-Copy.png')}></Image>
+              </View>
+              <Text style={styles.categoryItemName}>Meat</Text>
+            </TouchableOpacity>
+          </ScrollView>
         </View>
 
         {/* <View style={styles.previousYou}>
@@ -188,6 +454,7 @@ const StoreDetails = ({navigation, route}) => {
         <View style={styles.previousYou}>
           <View style={styles.previousYouHeader}>
             <Text style={styles.previousYouHeaderFevorit}>Store Products</Text>
+            <Filters></Filters>
           </View>
 
           {loading ? (
@@ -196,6 +463,9 @@ const StoreDetails = ({navigation, route}) => {
             </View>
           ) : (
             <ScrollView style={styles.previousYouGrid}>
+              <View style={styles.previousYouHeader}>
+                <Text style={styles.categoryName}>Vegetables</Text>
+              </View>
               {products?.map((item, index) => {
                 if (index < 50) {
                   return (
@@ -204,6 +474,8 @@ const StoreDetails = ({navigation, route}) => {
                       item={item}
                       index={index}
                       showBasket
+                      discount
+                      price
                       vendorId={VendorId}
                     />
                   );
@@ -216,7 +488,138 @@ const StoreDetails = ({navigation, route}) => {
     </View>
   );
 };
-
+const sheetStyle = StyleSheet.create({
+  sheet: {
+    position: 'absolute',
+    top: '23%',
+    height: '100%',
+    width: '99%',
+    backgroundColor: '#F2F3F2',
+    borderTopRightRadius: 12,
+    borderTopLeftRadius: 12,
+    marginLeft: 1,
+    marginRight: 1,
+  },
+  sheetHead: {
+    flexDirection: 'row',
+    marginTop: 20,
+    marginBottom: 10,
+    justifyContent: 'center',
+    width: '90%',
+    marginLeft: '5%',
+  },
+  headName: {
+    fontSize: 20,
+    color: '#181725',
+    fontWeight: '400',
+  },
+  subHead: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+  },
+  subHeadName: {
+    fontSize: 24,
+    color: '#181725',
+    fontWeight: '600',
+    justifyContent: 'flex-start',
+    alignSelf: 'center',
+  },
+  closeIcon1: {
+    fontSize: 24,
+    color: '#181725',
+    fontWeight: '600',
+  },
+  sheetItem: {
+    position: 'absolute',
+    bottom: 1,
+  },
+  itemName: {
+    fontSize: 18,
+    color: '#7C7C7C',
+  },
+  righticon: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignContent: 'center',
+  },
+  optn: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontSize: 16,
+    color: '#181725',
+  },
+  right: {
+    marginLeft: 15,
+    marginTop: 6,
+    fontSize: 15,
+  },
+  terms: {
+    width: '80%',
+    fontSize: 14,
+    fontWeight: '600',
+    lineHeight: 21,
+    color: '#7C7C7C',
+  },
+  checkout: {
+    // position: 'absolute',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    bottom: 1,
+  },
+  checkoutBtn: {
+    // flex: 1,
+    flexDirection: 'row',
+    borderRadius: 18,
+    height: 67,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#DB3022',
+    width: '80%',
+    marginLeft: '10%',
+    // position: 'absolute',
+    bottom: 10,
+    // marginTop: 120,
+  },
+  checkoutText: {
+    // flex: 6,
+    color: '#FCFCFC',
+    fontSize: 18,
+    fontWeight: '400',
+    lineHeight: 18,
+    // marginLeft:'12%'
+  },
+  priceBG: {
+    position: 'relative',
+    // flex: 1/2,
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+    marginLeft: '4%',
+    backgroundColor: '#BB0A0A',
+    borderRadius: 5,
+    left: 0,
+  },
+  priceInfo: {
+    // width: '10%',
+    padding: '2%',
+    color: '#FCFCFC',
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  readio: {
+    height: 24,
+    width: 24,
+    borderWidth: 1,
+    borderColor: '#C2C2C2',
+    borderRadius: 8,
+  },
+  readioText: {
+    fontSize: 16,
+    fontWeight: '400',
+    color: '#181725',
+    marginLeft: 12,
+  },
+});
 const styles = StyleSheet.create({
   main: {
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
@@ -228,7 +631,7 @@ const styles = StyleSheet.create({
     width: '90%',
     marginLeft: '5%',
     borderBottomColor: '#F7F7F7',
-    borderBottomWidth: 1,
+    // borderBottomWidth: 1,
   },
   TOback: {
     flexDirection: 'column',
@@ -247,10 +650,14 @@ const styles = StyleSheet.create({
     fontSize: 29,
     fontWeight: 'bold',
     color: 'black',
+    // width: 23,
   },
   address: {
     fontSize: 12,
     color: '#7F7F7F',
+    // display: 'block',
+    // maxWidth: '50%',
+    height: 18,
   },
   SubHeader: {
     marginTop: 4,
@@ -306,6 +713,9 @@ const styles = StyleSheet.create({
     // marginTop: 30
   },
   categorySectionItem: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: 20,
     width: Dimensions.get('window').width / 5,
   },
@@ -329,8 +739,7 @@ const styles = StyleSheet.create({
   },
   categoryItemLogo: {
     borderRadius: 25,
-    width: '100%',
-    height: '100%',
+    width: 20,
   },
   categoryItemName: {
     color: '#22292E',
@@ -356,11 +765,19 @@ const styles = StyleSheet.create({
   previousYouHeader: {
     flexDirection: 'row',
     height: 30,
+    justifyContent: 'space-between',
   },
   previousYouHeaderFevorit: {
     color: '#000000',
     fontSize: 14,
     fontWeight: 'bold',
+    width: '50%',
+  },
+  categoryName: {
+    color: '#000000',
+    fontSize: 12,
+    fontWeight: '600',
+    width: '50%',
   },
   previousYouGrid: {},
   previousYouItem: {

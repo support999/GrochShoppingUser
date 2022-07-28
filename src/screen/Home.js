@@ -35,6 +35,7 @@ import {
   getBasket,
 } from '../data/data';
 import {AuthContext} from '../context/AuthProvider';
+import GroceryOfferSlide from './GroceryOfferSlide';
 
 const Home = ({navigation}) => {
   // console.log(moment().format('YYYY:MM:DD'));
@@ -98,7 +99,6 @@ const Home = ({navigation}) => {
 
   const getOrderHistory = async () => {
     const orederRes = await fetchHistory(12);
-
     setOrders(orederRes);
     setReloadOrder(false);
   };
@@ -109,13 +109,13 @@ const Home = ({navigation}) => {
       <View style={styles.container}>
         <Header />
 
-        <SearchBar showText onChange={onChange} />
-        <OfferSlide />
-
-        <ScrollView style={{padding: 0, margin: 0, flex: 1}}>
+        <ScrollView style={{padding: 0, margin: 0, flex: 1, marginTop: -10}}>
+          <SearchBar showText onChange={onChange} showText2 />
+          <OfferSlide />
           <Favorit />
           <ShopsCategory />
           <TopPick />
+          <GroceryOfferSlide />
           <NearYou />
         </ScrollView>
       </View>

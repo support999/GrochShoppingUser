@@ -11,6 +11,9 @@ import {
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {DeliveredOrders} from '../components';
+import ProcessingOrder from '../components/ProcessingOrder';
+import CancelOrder from '../components/CancelOrder';
+import SearchBar from './SearchBar';
 const {width} = Dimensions.get('window');
 
 export default class Order extends React.Component {
@@ -104,10 +107,14 @@ export default class Order extends React.Component {
           <Text
             style={[
               styles.headerName,
-              {color: 'black', fontSize: 34, fontWeight: '900', marginTop: 10},
+              {color: '#7F7F7F', fontSize: 20, fontWeight: '700', marginTop: 0},
             ]}>
             My Orders
           </Text>
+          <View></View>
+        </View>
+        <View style={{marginTop: -10, marginBottom: 10}}>
+          <SearchBar />
         </View>
 
         <View
@@ -131,7 +138,7 @@ export default class Order extends React.Component {
                 height: '100%',
                 top: 0,
                 left: 0,
-                backgroundColor: '#222222',
+                backgroundColor: '#F20505',
                 borderRadius: 24,
                 transform: [
                   {
@@ -146,7 +153,7 @@ export default class Order extends React.Component {
                 justifyContent: 'center',
                 alignItems: 'center',
                 // borderWidth: 1,
-                borderColor: '#222222',
+                borderColor: '#F20505',
                 borderRadius: 4,
                 borderRightWidth: 0,
                 borderTopRightRadius: 0,
@@ -162,9 +169,9 @@ export default class Order extends React.Component {
               }>
               <Text
                 style={{
-                  color: active === 0 ? '#fff' : '#222222',
+                  color: active === 0 ? '#fff' : '#F20505',
                 }}>
-                Delivered
+                New Orders
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -173,7 +180,7 @@ export default class Order extends React.Component {
                 justifyContent: 'center',
                 alignItems: 'center',
                 // borderWidth: 1,
-                borderColor: '#222222',
+                borderColor: '#F20505',
                 borderRadius: 4,
                 borderLeftWidth: 0,
                 borderTopLeftRadius: 0,
@@ -228,6 +235,7 @@ export default class Order extends React.Component {
               style={{
                 justifyContent: 'center',
                 alignItems: 'center',
+                // height: '0%',
                 transform: [
                   {
                     translateX: translateXTabOne,
@@ -256,7 +264,9 @@ export default class Order extends React.Component {
                 ],
               }}>
               {/* processing order list */}
-              <DeliveredOrders />
+              {/* <DeliveredOrders /> */}
+              <ProcessingOrder />
+              {/* <CancelOrder /> */}
             </Animated.View>
 
             <Animated.View
@@ -273,6 +283,7 @@ export default class Order extends React.Component {
                 ],
               }}>
               {/* cancelled order list */}
+              <CancelOrder />
             </Animated.View>
           </ScrollView>
         </View>
@@ -382,7 +393,8 @@ const stylesBtn = StyleSheet.create({
 
 const styles = StyleSheet.create({
   header: {
-    flexDirection: 'column',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     width: '90%',
     marginLeft: '5%',
     marginTop: '3%',
@@ -390,6 +402,7 @@ const styles = StyleSheet.create({
   },
   TOback: {
     //   flexDirection: 'column'
+    marginTop: 0,
   },
   backIcon: {
     fontSize: 22,

@@ -16,6 +16,7 @@ import {ActivityIndicator, VendorsNearbyListitem} from '../components';
 import Geolocation from 'react-native-geolocation-service';
 import {hasLocationPermission} from '../util/util';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import SearchBar from './SearchBar';
 
 const NearYou = ({route}) => {
   const {location} = useContext(AuthContext);
@@ -95,9 +96,21 @@ const NearYou = ({route}) => {
 
         {/* <Ionicons style={styles.closeIcon} name='close'  /> */}
       </View>
+      <SearchBar showText2 />
+      <Text
+        style={{
+          fontSize: 14,
+          fontWeight: '400',
+          color: '#9B9B9B',
+          marginLeft: 10,
+          marginTop: 10,
+          marginBottom: 10,
+        }}>
+        Stores Near you
+      </Text>
       <View style={styles.storeNearYouHeader}>
         <Text style={styles.storeNearYouHeaderFevorit}>
-          Showing Nearby Vendors that sells {productName}
+          There are {vendorsNearBy.length} stores near you... {productName}
         </Text>
       </View>
 
@@ -261,9 +274,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   storeNearYouHeaderFevorit: {
-    fontSize: 14,
-    color: '#000000',
-    fontWeight: 'bold',
+    fontSize: 11,
+    color: '#7C7C7C',
+    fontWeight: '600',
     textAlign: 'left',
     margin: 10,
     marginTop: 0,
@@ -444,11 +457,12 @@ const styles = StyleSheet.create({
     width: '90%',
     marginLeft: '5%',
     borderBottomColor: '#F7F7F7',
-    borderBottomWidth: 1,
-    paddingBottom: 20,
+    // borderBottomWidth: 1,
+    // paddingBottom: 20,
   },
   TOback: {
     flexDirection: 'column',
+    marginTop: 12,
   },
 });
 

@@ -27,7 +27,7 @@ const TopPicksForYour = () => {
   const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
-    const res = await getTopPickProducts(12);
+    const res = await getTopPickProducts(1);
     setTopPick(res);
     setLoading(false);
   };

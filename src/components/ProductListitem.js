@@ -9,7 +9,7 @@ import {
   Alert,
   StatusBar,
 } from 'react-native';
-
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useNavigation} from '@react-navigation/native';
 import {
   addToBag,
@@ -24,7 +24,7 @@ const ProductListItem = props => {
 
   const navigation = useNavigation();
 
-  const {item, showBasket, vendorId} = props;
+  const {item, showBasket, vendorId, discount, price} = props;
 
   const {
     ProductName,
@@ -45,17 +45,15 @@ const ProductListItem = props => {
   } = item;
 
   const addItemToBag = async () => {
-    const pID = ProductId || productId;
     const index = basket?.findIndex(
-      basketItem => basketItem.vendorProductId === pID,
+      basketItem => basketItem.productId === ProductId,
     );
-
     if (index >= 0) {
       console.log('Item exist');
     } else {
       const localBasket = await addToBag(item, basket, 12, vendorId);
       setBasket(localBasket);
-      // console.log(localBasket[0]);
+      console.log(localBasket);
     }
   };
 
@@ -75,26 +73,67 @@ const ProductListItem = props => {
         source={{uri: ProductImage || productImage}}
       />
       <View style={styles.previousItemInfo}>
-        <Text style={styles.previousItemName}>
-          {ProductName || productName}
-        </Text>
-        <Text style={styles.previousItemPriceQtt}>
-          {ProductWeight || productWeight}
-        </Text>
-
-        <View style={styles.previousItemRSandBuy}>
-          <Text style={styles.previousItemRS}>
-            RS {ProductPrice || productPrice}
+        <View style={{flexDirection: 'row'}}>
+          <Text
+            style={styles.previousItemName}
+            numberOfLines={1}
+            ellipsizeMode="tail">
+            {ProductName || productName}
           </Text>
-          {showBasket && (
-            <TouchableOpacity
-              onPress={() => {
-                addItemToBag();
-              }}
-              style={styles.previousItemBTN}>
-              <Text style={styles.previousItemBTNtext}>Add Basket</Text>
-            </TouchableOpacity>
-          )}
+        </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            width: '100%',
+          }}>
+          <View style={styles.previousItemInfo1}>
+            <Text style={styles.previousItemPriceQtt}>
+              {ProductWeight || productWeight}
+            </Text>
+            {price && (
+              <View style={styles.previousItemPriceDtl}>
+                <Text style={styles.previousItemPriceReal}>
+                  Rs 36{' '}
+                  <AntDesign
+                    name="arrowup"
+                    size={12}
+                    color="#3CAC14"></AntDesign>
+                </Text>
+                <Text style={[styles.previousItemPriceCut, {marginLeft: 8}]}>
+                  Rs 36
+                </Text>
+              </View>
+            )}
+          </View>
+
+          <View style={styles.previousItemRSandBuy}>
+            {/* <Text style={styles.previousItemRS}>
+            RS {ProductPrice || productPrice}
+          </Text> */}
+            {discount && (
+              <View
+                style={[
+                  styles.previousItemBTN,
+                  {
+                    backgroundColor: '#3CAC14',
+                    borderRadius: 5,
+                    marginBottom: 10,
+                  },
+                ]}>
+                <Text style={styles.previousItemBTNtext}>15% Discount</Text>
+              </View>
+            )}
+            {showBasket && (
+              <TouchableOpacity
+                onPress={() => {
+                  addItemToBag();
+                }}
+                style={styles.previousItemBTN}>
+                <Text style={styles.previousItemBTNtext}>Add</Text>
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
       </View>
     </TouchableOpacity>
@@ -279,19 +318,39 @@ const styles = StyleSheet.create({
     height: 55,
     width: 55,
     marginLeft: 10,
-    marginTop: 20,
+    marginTop: 27,
     flexDirection: 'column',
   },
   previousItemInfo: {
     marginLeft: 15,
     marginTop: 10,
     flexDirection: 'column',
-    flex: 1,
+    // alignItems: 'center',
+    // flex: 1,
+    width: '78%',
   },
   previousItemName: {
     color: '#4D4D4D',
     fontSize: 14,
-    width: '80%',
+    // width: '100%',
+    // maxWidth: 188,
+    width: '100%',
+  },
+  previousItemPriceDtl: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    // width: '50%',
+  },
+  previousItemPriceReal: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#222222',
+  },
+  previousItemPriceCut: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#7C7C7C',
+    textDecorationLine: 'line-through',
   },
   previousItemPriceQtt: {
     color: '#9B9B9B',
@@ -300,13 +359,20 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 5,
   },
+  previousItemInfo1: {
+    flexDirection: 'column',
+    // width: '23%',
+  },
   previousItemRSandBuy: {
     // flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    // marginTop: 6
+    flexDirection: 'column',
+    // justifyContent: 'space-between',
+    // alignSelf: 'flex-end',
+    // marginTop: 6,
+    // width: '50%',
   },
   previousItemRS: {
+    marginTop: -6,
     color: '#222222',
     fontSize: 14,
     lineHeight: 20,
@@ -315,15 +381,13 @@ const styles = StyleSheet.create({
   previousItemBTN: {
     height: 26,
     width: 106,
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: '#FF0909',
-    marginRight: '8%',
-    // textAlign: 'right'
+    // maxHeight: 90,
+    borderRadius: 10,
+    backgroundColor: '#FF6B6B',
   },
   previousItemBTNtext: {
     fontSize: 12,
-    color: '#FF0909',
+    color: '#fff',
     fontWeight: '600',
     textAlign: 'center',
     marginTop: 3,

@@ -15,7 +15,7 @@ import {AuthContext} from '../context/AuthProvider';
 const CategoriesListItem = props => {
   const navigation = useNavigation();
   const {item} = props;
-  const {productCategory, imageUrl} = item;
+  const {productCategory} = item;
 
   // console.log(item);
 
@@ -32,7 +32,9 @@ const CategoriesListItem = props => {
       style={styles.categorySectionItem}
       onPress={() => navigation.navigate('SearchProduct', {item: item})}>
       <View style={[styles.categoryItemLogoBG, styles.bgColor2]}>
-        <Image style={styles.categoryItemLogo} source={{uri: imageUrl}}></Image>
+        <Image
+          style={styles.categoryItemLogo}
+          source={require('./../assets/Eggs,Meat&Fish.png')}></Image>
       </View>
       <Text style={styles.categoryItemName}>{productCategory}</Text>
     </TouchableOpacity>

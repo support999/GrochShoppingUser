@@ -46,7 +46,7 @@ const SearchProduct = ({navigation, route}) => {
         </Text>
         <TouchableOpacity
           style={styles.closeIcon}
-          onPress={() => navigation.goBack()}>
+          onPress={() => navigation.navigate('FreqentSearch')}>
           <Ionicons style={styles.closeIcon1} name="close" />
         </TouchableOpacity>
       </View>

@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,7 +9,6 @@ import {
   Dimensions,
   ImageBackground,
   SafeAreaView,
-  Alert,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -24,10 +23,8 @@ const {height, width} = Dimensions.get('screen');
 import {ScrollView, StatusBar, useColorScheme} from 'react-native';
 import auth from '@react-native-firebase/auth';
 import {CountryPickerModal} from '../components';
-import {AuthContext} from '../context/AuthProvider';
 
 const NumberOtp = ({navigation}) => {
-  const {setAuth} = useContext(AuthContext);
   const [isShow, setisShow] = useState(true);
   const [phoneNumber, setPhoneNumber] = useState(true);
   const [confirm, setConfirm] = useState(null);
@@ -49,6 +46,7 @@ const NumberOtp = ({navigation}) => {
 
   async function signInWithPhoneNumber(phoneNumber) {
     const fullNumber = countryCallingCode + phoneNumber;
+    console.log(fullNumber);
     try {
       const confirmation = await auth().signInWithPhoneNumber(fullNumber);
       setisShow(!isShow);
@@ -63,10 +61,7 @@ const NumberOtp = ({navigation}) => {
   async function confirmCodes() {
     try {
       await confirm.confirm(code);
-      console.log('correct');
-      setAuth(true);
     } catch (error) {
-      Alert.alert('Wrong OTP code entered');
       console.log('Invalid code.');
     }
   }
@@ -200,7 +195,7 @@ const NumberOtp = ({navigation}) => {
             <TextInput
               onChangeText={val => setCode(val)}
               placeholder="-- -- -- --"
-              style={{color: '#030303', fontSize: 18, flex: 1}}
+              style={{color: '#030303', fontSize: 18}}
             />
           </View>
 

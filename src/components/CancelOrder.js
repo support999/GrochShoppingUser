@@ -2,7 +2,7 @@ import {Text, TouchableOpacity, StyleSheet, View} from 'react-native';
 import React, {useContext} from 'react';
 import {AuthContext} from '../context/AuthProvider';
 import moment from 'moment';
-const DeliveredOrders = () => {
+const CancelOrder = () => {
   const {orders} = useContext(AuthContext);
 
   const OrderListItem = pItem => {
@@ -14,27 +14,24 @@ const DeliveredOrders = () => {
         <View style={stylesBtn.item}>
           <View style={stylesBtn.itemRow1}>
             <Text
-              numberOfLines={1}
-              ellipsizeMode="tail"
               style={[
                 stylesBtn.itemRow1,
                 stylesBtn.higlght,
                 stylesBtn.darkFont,
-                {width: '33%'},
               ]}>
-              Ali Super Store1123123423423
+              Ali Super Store
+            </Text>
+            <Text
+              style={[stylesBtn.itemRow1, stylesBtn.smallfont, stylesBtn.red]}>
+              Cancel
             </Text>
             <Text
               style={[
                 stylesBtn.itemRow1,
                 stylesBtn.smallfont,
-                stylesBtn.green,
-                {marginLeft: '-16%'},
+                stylesBtn.grayFont,
               ]}>
-              New Order
-            </Text>
-            <Text style={[stylesBtn.itemRow1, stylesBtn.height, stylesBtn.red]}>
-              Cancel
+              {moment(CreatedDate).format('YYYY-MM-DD')}
             </Text>
           </View>
           <View style={stylesBtn.itemRow2}>
@@ -53,15 +50,6 @@ const DeliveredOrders = () => {
                 ]}>
                 {OrderId}
               </Text>
-            </Text>
-
-            <Text
-              style={[
-                stylesBtn.itemRow1,
-                stylesBtn.smallfont,
-                stylesBtn.grayFont,
-              ]}>
-              {moment(CreatedDate).format('YYYY-MM-DD')}
             </Text>
           </View>
           <View style={stylesBtn.itemRow3}>
@@ -106,19 +94,19 @@ const DeliveredOrders = () => {
             </View>
           </View>
 
-          <View style={stylesBtn.itemRow4}>
+          {/* <View style={stylesBtn.itemRow4}>
             <View style={stylesBtn.btn1}>
               <Text style={[stylesBtn.higlght, stylesBtn.white]}>Details</Text>
             </View>
 
-            <View style={stylesBtn.btn2}>
+            <View style={[stylesBtn.btn2, stylesBtn.blueBG]}>
               <Text
                 style={[
                   stylesBtn.itemRow1,
                   stylesBtn.smallfont,
-                  stylesBtn.yello,
+                  stylesBtn.white,
                 ]}>
-                Reorder
+                Return
               </Text>
             </View>
 
@@ -132,7 +120,7 @@ const DeliveredOrders = () => {
                 Check Out
               </Text>
             </View>
-          </View>
+          </View> */}
         </View>
       </View>
     );
@@ -149,7 +137,7 @@ const DeliveredOrders = () => {
   );
 };
 
-export default DeliveredOrders;
+export default CancelOrder;
 
 const stylesBtn = StyleSheet.create({
   list: {},
@@ -206,8 +194,8 @@ const stylesBtn = StyleSheet.create({
     // flex: 1,
     height: 30,
     width: 98,
-    borderWidth: 1,
-    borderColor: '#F20505',
+    // borderWidth: 1,
+    // borderColor: '#F20505',
     borderRadius: 25,
     justifyContent: 'center',
     textAlign: 'center',
@@ -251,7 +239,13 @@ const stylesBtn = StyleSheet.create({
   green: {
     color: '#2AA952',
   },
+  orange: {
+    color: '#D68F1B',
+  },
   margin: {
     marginLeft: 5,
+  },
+  blueBG: {
+    backgroundColor: '#3D6DEB',
   },
 });

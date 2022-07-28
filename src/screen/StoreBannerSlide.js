@@ -45,12 +45,12 @@ const data = [
 import {ScrollView, StatusBar, useColorScheme} from 'react-native';
 import Swiper from 'react-native-swiper';
 
-const imageW = width;
+const imageW = width - 10;
 const imageH = imageW * 1.54;
 import {AuthContext} from '../context/AuthProvider';
 import {getVendorBanner} from '../data/data';
 
-const OfferSlide = () => {
+const StoreBannerSlide = () => {
   const {setLocation, location} = useContext(AuthContext);
   const [banner, setBanner] = useState([]);
   useEffect(() => {
@@ -66,12 +66,11 @@ const OfferSlide = () => {
   return (
     <View style={styles.slideContainer}>
       <Swiper
-        // showsButtons
         autoplay
         dot={
           <View
             style={{
-              backgroundColor: '#ffff',
+              backgroundColor: 'gray',
               width: 8,
               height: 8,
               borderRadius: 4,
@@ -104,7 +103,12 @@ const OfferSlide = () => {
                   key={index.toString()}
                   style={styles.backgroundImg}
                   imageStyle={{borderRadius: 0}}
-                  source={{uri: item.bannerImageurl}}></ImageBackground>
+                  //   source={{ uri: item.bannerImageurl }}
+                  source={require('./../assets/storebanner.png')}>
+                  <View style={styles.overTextOfferBox}>
+                    <Text style={styles.overTextOffer}>15% Discount</Text>
+                  </View>
+                </ImageBackground>
               );
             })
           : // display thi sif banner is empy
@@ -113,8 +117,14 @@ const OfferSlide = () => {
                 <ImageBackground
                   key={index.toString()}
                   style={styles.backgroundImg}
-                  imageStyle={{borderRadius: 0}}
-                  source={item.bannerImageurl}></ImageBackground>
+                  imageStyle={{borderRadius: 10}}
+                  source={require('./../assets/storebanner.png')}
+                  //   source={item.bannerImageurl}
+                >
+                  <View style={styles.overTextOfferBox}>
+                    <Text style={styles.overTextOffer}>15% Discount</Text>
+                  </View>
+                </ImageBackground>
               );
             })}
       </Swiper>
@@ -130,31 +140,31 @@ const styles = StyleSheet.create({
     marginTop: 10,
     backgroundColor: 'white',
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+    borderRadius: 15,
+    width: '96%',
+    marginLeft: '2%',
   },
   backgroundImg: {
-    height: 110,
-    borderRadius: 5,
-    width: imageW,
+    height: 122,
+    width: '100%',
     paddingLeft: 0,
     marginLeft: 0,
-    marginTop: 5,
+    borderRadius: 15,
   },
   overTextOfferBox: {
-    width: 160,
-    marginTop: 70,
+    width: 120,
+    marginTop: 10,
+    backgroundColor: '#FF6B6B',
+    borderTopRightRadius: 5,
+    borderBottomEndRadius: 5,
+    height: 26,
+    justifyContent: 'center',
   },
   overTextOffer: {
-    lineHeight: 37,
-    fontWeight: '600',
-    fontSize: 35,
+    fontWeight: '400',
+    fontSize: 14,
     color: 'white',
+    marginLeft: 15,
   },
   storeNearItemDisLable1: {
     backgroundColor: '#FF6B6B',
@@ -171,4 +181,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default OfferSlide;
+export default StoreBannerSlide;

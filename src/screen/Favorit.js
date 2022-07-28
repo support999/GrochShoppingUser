@@ -24,7 +24,7 @@ const Favorit = () => {
   const navigation = useNavigation();
 
   const fetchData = async () => {
-    const res = await getPreviousVendors(12);
+    const res = await getPreviousVendors(1);
     // console.log(res[1]);
     setPreviuosVendors(res);
     setLoading(false);
